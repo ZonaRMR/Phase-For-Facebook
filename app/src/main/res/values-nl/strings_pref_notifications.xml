@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name = "notification_frequency">Notification Frequency</string>
+    <string name = "no_notifications">Geen meldingen</string>
+    <string name = "notification_keywords">Trefwoorden</string>
+    <string name = "notification_keywords_desc">Waarschuwt niet wanneer notificatie een van deze sleutels bevat.</string>
+    <string name = "add_keyword">Keyword toevoegen</string>
+    <string name = "hint_keyword">Typ trefwoord en druk op +</string>
+    <string name = "empty_keyword">Leeg trefwoord</string>
+    <string name = "notification_all_accounts">Notify from all accounts</string>
+    <string name = "notification_all_accounts_desc">Ontvang meldingen voor elk account dat is ingelogd. Als u dit uitschakelt, worden alleen meldingen van het momenteel geselecteerde account opgehaald.</string>
+    <string name = "notification_messages">Berichtmeldingen inschakelen</string>
+    <string name = "notification_messages_desc">Ontvang meldingen voor uw huidige account</string>
+    <string name = "notification_messages_all_accounts">Meld berichten van alle accounts</string>
+    <string name = "notification_messages_all_accounts_desc">Ontvang direct berichtmeldingen van alle accounts</string>
+    <string name = "notification_fetch_now">Meldingen nu ophalen</string>
+    <string name = "notification_fetch_now_desc">Activeer de notificatie-ophaler één keer. Merk op dat het ophalen van instant messages tijd kost.</string>
+    <string name = "notification_fetch_success">Meldingen ophalen …</string>
+    <string name = "notification_fetch_fail">Kon notifications</string>niet ophalen
+    <string name = "notification_sound">​​Kennisgevingsgeluid</string>
+
+    <string name = "notification_ringtone">Notification Ringtone</string>
+    <string name = "message_ringtone">Message Ringtone</string>
+    <string name = "select_ringtone">Selet Ringtone</string>
+
+    <string name = "notification_vibrate">Notification vibration</string>
+    <string name = "notification_lights">Meldingslampjes</string>
+
+</resources>

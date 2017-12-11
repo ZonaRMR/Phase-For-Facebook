@@ -1,0 +1,72 @@
+<resources>
+    <!-- Tabs -->
+    <string name="theme_default">Default</string>
+    <string name="theme_gray">Grijs</string>
+    <string name="theme_dark">Donker</string>
+    <string name="theme_amoled">Amoled</string>
+    <string name="theme_glass">Glas</string>
+    <string name="theme_custom">Custom</string>
+
+    <string name="video_upload">Upload Video</string>
+    <string name="pokes">Porren</string>
+
+    <string name = "feed">Nieuws Overzicht </string>
+    <string name = "most_recent">Meest recent </string>
+    <string name = "top_stories">Topverhalen </string>
+    <string name = "profile">Profile </string>
+    <string name = "bookmarks">Bookmarks </string>
+    <string name = "events">Events </string>
+    <string name = "friends">Vrienden </string>
+    <string name = "messages">Messages </string>
+    <string name = "notifications">Notifications </string>
+    <string name = "activity_log">Activiteitenlogboek </string>
+    <string name = "pages">Pagina\'s </string>
+    <string name = "groups">Groepen </string>
+    <string name = "saved">Saved </string>
+    <string name = "birthdays">Verjaardagen </string>
+    <string name = "chat">Chat </string>
+    <string name = "photos">Foto\'s </string>
+    <string name = "notes">Notitie </string>
+    <string name = "on_this_day">Op deze dag </string>
+
+    <!--Aanmelden-->
+
+    <string name = "loading_account">Alles klaar maken … </string>
+    <string name = "welcome">Welkom %s</string>
+    <string name = "select_facebook_account">Selecteer Facebook-account </string>
+    <string name = "account_not_found">​​Huidige account staat niet in de database </string>
+
+    <string name = "frost_notifications">Phase Notifications </string>
+    <string name = "requires_custom_theme">Aangepast thema vereist </string>
+
+    <string name = "subject">Subject </string>
+    <string name = "share">Delen </string>
+
+    <string name = "web_overlay_swipe_hint">Veeg naar rechts om terug te gaan naar het vorige venster. </string>
+    <string name = "profile_picture">Profielafbeelding </string>
+
+    <string name = "new_message">Nieuw bericht </string>
+    <string name = "no_text">Geen tekst </string>
+
+    <string name = "show_all_results">Toon alle resultaten </string>
+
+    <!-- Over -->
+
+    <string name = "frost_description">Phase is een volledig thema,
+        volledig functioneel alternatief voor de officiële Facebook-app, helemaal opnieuw gemaakt en met trots open source. </string>
+
+    <string name = "faq_title">Phase FAQ </string>
+
+    <!-- HTML Extractor -->
+
+    <string name = "html_extraction_error">Er is een fout opgetreden in de html-extractie. </string>
+    <string name = "html_extraction_cancelled">De aanvraag is geannuleerd. </string>
+    <string name = "html_extraction_timeout">Het verzoek is verlopen. </string>
+    <string name = "file_chooser_not_found">​​Bestandskiezer niet gevonden </string>
+
+    <string name = "top_bar">Topbar </string>
+    <string name = "bottom_bar">Beneden Bar </string>
+
+    <string name="tab_customizer_instructions">Sleep de bovenstaande pictogrammen en zet ze neer. \ Dubbelklik op een pictogram hierboven om het te verwijderen. \ NTik op een pictogram hieronder om het aan de werkbalk toe te voegen als er ruimte is.</string>
+
+</resources>

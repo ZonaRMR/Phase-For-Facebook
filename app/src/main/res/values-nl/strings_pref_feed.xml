@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name = "newsfeed_sort">Newsfeed Order</string>
+    <string name = "newsfeed_sort_desc">Bepaalt de volgorde waarin de berichten worden getoond</string>
+    <string name = "aggressive_recents">Aggressive Recents</string>
+    <string name = "aggressive_recents_desc">Filter extra oude berichten uit Facebook\'s oorspronkelijke meest recents-feed. Schakel dit uit als uw feed leeg is.</string>
+    <string name = "composer">Statuscomponist</string>
+    <string name = "composer_desc">Toon statuscomponist in de feed</string>
+
+    <string name = "pro_features">Pro Features</string>
+    <string name = "suggested_friends">Suggested Friends</string>
+    <string name = "suggested_friends_desc">Toon "People You Know" in de feed</string>
+    <string name = "suggested_groups">Aanbevolen groepen</string>
+    <string name = "suggested_groups_desc">Toon "Aanbevolen groepen" in de feed</string>
+    <string name = "facebook_ads">Facebook Ads</string>
+    <string name = "facebook_ads_desc">Toon native Facebook-advertenties</string>
+
+</resources>

@@ -1,0 +1,80 @@
+<resources>
+    <!--Tabs-->
+
+
+    <string name="theme_default">Default</string>
+    <string name="theme_gray">Gray</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_amoled">Amoled</string>
+    <string name="theme_glass">Glass</string>
+    <string name="theme_custom">Custom</string>
+
+    <string name="video_upload">Upload Video</string>
+    <string name="pokes">Pokes</string>
+    <string name="fab">Fab</string>
+
+    <string name="feed">Feed</string>
+    <string name="most_recent">Most Recent</string>
+    <string name="top_stories">Top Stories</string>
+    <string name="profile">Profile</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="events">Events</string>
+    <string name="friends">Friends</string>
+    <string name="messages">Messages</string>
+    <string name="notifications">Notifications</string>
+    <string name="activity_log">Activity Log</string>
+    <string name="pages">Pages</string>
+    <string name="groups">Groups</string>
+    <string name="saved">Saved</string>
+    <string name="birthdays">Birthdays</string>
+    <string name="chat">Chat</string>
+    <string name="photos">Photos</string>
+    <string name="menu" translatable="false">@string/kau_menu</string>
+    <string name="settings" translatable="false">@string/kau_settings</string>
+    <string name="notes">Notes</string>
+    <string name="on_this_day">On This Day</string>
+
+    <!--Login-->
+
+    <string name="loading_account">Getting everything ready…</string>
+    <string name="welcome">Welcome %s</string>
+    <string name="select_facebook_account">Select Facebook Account</string>
+    <string name="account_not_found">Current account is not in the database</string>
+
+    <string name="frost_notifications">Phase Notifications</string>
+    <string name="requires_custom_theme">Requires custom theme</string>
+
+    <string name="subject">Subject</string>
+    <string name="share">Share</string>
+
+    <string name="web_overlay_swipe_hint">Swipe right to go back to the previous window.</string>
+    <string name="profile_picture">Profile Picture</string>
+
+    <string name="new_message">New Message</string>
+    <string name="no_text">No text</string>
+
+    <string name="show_all_results">Show All Results</string>
+
+    <!--About-->
+
+    <string name="frost_description">Phase is a fully themable,
+        fully functional alternative to the official Facebook app, made from scratch and proudly open sourced.</string>
+
+    <string name="faq_title">Phase FAQ</string>
+
+    <!--HTML Extractor-->
+
+    <string name="html_extraction_error">An error occurred in the html extraction.</string>
+    <string name="html_extraction_cancelled">The request has been cancelled.</string>
+    <string name="html_extraction_timeout">The request has timed out.</string>
+    <string name="file_chooser_not_found">File chooser not found</string>
+
+    <string name="top_bar">Top Bar</string>
+    <string name="bottom_bar">Bottom Bar</string>
+
+    <string name="pip" translatable="false">PIP</string>
+    <string name="preview">Preview</string>
+    <string name="options">Options</string>
+    <string name="tab_customizer_instructions">Drag and drop the icons above to rearrange them.\nDouble tap an icon above to remove it.\nTap an icon below to add it to the toolbar if there is space.</string>
+
+</resources>
