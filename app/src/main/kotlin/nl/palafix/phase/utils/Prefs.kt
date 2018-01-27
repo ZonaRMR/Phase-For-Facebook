@@ -5,7 +5,9 @@ import ca.allanwang.kau.kotlin.lazyResettable
 import ca.allanwang.kau.kpref.KPref
 import ca.allanwang.kau.kpref.StringSet
 import ca.allanwang.kau.kpref.kpref
+import ca.allanwang.kau.utils.colorToForeground
 import ca.allanwang.kau.utils.isColorVisibleOn
+import ca.allanwang.kau.utils.withAlpha
 import nl.palafix.phase.enums.FACEBOOK_BLUE
 import nl.palafix.phase.enums.FeedSort
 import nl.palafix.phase.enums.MainActivityLayout
@@ -37,11 +39,15 @@ object Prefs : KPref() {
 
     var customIconColor: Int by kpref("color_icons", 0xffeceff1.toInt())
 
+    var customNotiColor: Int by kpref("color_noti", 0xffeceff1.toInt())
+
     var exitConfirmation: Boolean by kpref("exit_confirmation", true)
 
     var notificationFreq: Long by kpref("notification_freq", 60L)
 
     var versionCode: Int by kpref("version_code", -1)
+
+    var prevVersionCode: Int by kpref("prev_version_code", -1)
 
     var installDate: Long by kpref("install_date", -1L)
 
@@ -57,10 +63,17 @@ object Prefs : KPref() {
     val accentColor: Int
         get() = t.accentColor
 
-    val accentColorForWhite: Int
+    inline val accentColorForWhite: Int
         get() = if (accentColor.isColorVisibleOn(Color.WHITE)) accentColor
         else if (textColor.isColorVisibleOn(Color.WHITE)) textColor
         else FACEBOOK_BLUE
+
+    inline val nativeBgColor: Int
+        get() = Prefs.bgColor.withAlpha(30)
+
+    fun nativeBgColor(unread: Boolean) = Prefs.bgColor
+            .colorToForeground(if (unread) 0.9f else 0.0f)
+            .withAlpha(30)
 
     val bgColor: Int
         get() = t.bgColor
@@ -71,16 +84,19 @@ object Prefs : KPref() {
     val iconColor: Int
         get() = t.iconColor
 
+    val notiColor: Int
+        get() = t.notiColor
+
     val themeInjector: InjectorContract
         get() = t.injector
 
     val isCustomTheme: Boolean
         get() = t == Theme.CUSTOM
 
-    val frostId: String
-        get() = "${installDate}-${identifier}"
+    inline  val PhaseId: String
+        get() = "$installDate-$identifier"
 
-    var tintNavBar: Boolean by kpref("tint_nav_bar", false)
+    var tintNavBar: Boolean by kpref("tint_nav_bar", true)
 
     var webTextScaling: Int by kpref("web_text_scaling", 100)
 
@@ -100,7 +116,9 @@ object Prefs : KPref() {
 
     var animate: Boolean by kpref("fancy_animations", true)
 
-    var notificationKeywords: StringSet by kpref("notification_keywords", mutableSetOf<String>())
+    var notificationKeywords: StringSet by kpref("notification_keywords", mutableSetOf())
+
+    var notificationsGeneral: Boolean by kpref("notification_general", true)
 
     var notificationAllAccounts: Boolean by kpref("notification_all_accounts", true)
 
@@ -118,17 +136,19 @@ object Prefs : KPref() {
 
     var notificationLights: Boolean by kpref("notification_lights", true)
 
-    var messageScrollToBottom: Boolean by kpref("message_scroll_to_bottom", false)
+    var messageScrollToBottom: Boolean by kpref("message_scroll_to_bottom", true)
+
+    var enablePip: Boolean by kpref("enable_pip", true)
 
     /**
      * Cache like value to determine if user has or had pro
-     * In most cases, [nl.palafix.phase.utils.iab.IS_FROST_PRO] should be looked at instead
+     * In most cases, [nl.palafix.phase.utils.iab.IS_Phase_PRO] should be looked at instead
      * This has been renamed to pro for short, but keep in mind that it only reflects the value
      * of when it was previously verified
      */
     var pro: Boolean by kpref("previously_pro", false)
-
-    var profree: Boolean by kpref("free_pro", false)
+	
+	//var profree: Boolean by kpref("free_pro", true)
 
     var debugPro: Boolean by kpref("debug_pro", false)
 
@@ -144,13 +164,13 @@ object Prefs : KPref() {
 
     var loadMediaOnMeteredNetwork: Boolean by kpref("media_on_metered_network", true)
 
-    var debugSettings: Boolean by kpref("debug_settings", true)
+    var debugSettings: Boolean by kpref("debug_settings", false)
 
     var linksInDefaultApp: Boolean by kpref("link_in_default_app", false)
 
     var mainActivityLayoutType: Int by kpref("main_activity_layout_type", 0)
 
-    val mainActivityLayout: MainActivityLayout
+    inline  val mainActivityLayout: MainActivityLayout
         get() = MainActivityLayout(mainActivityLayoutType)
 
     override fun deleteKeys() = arrayOf("search_bar")

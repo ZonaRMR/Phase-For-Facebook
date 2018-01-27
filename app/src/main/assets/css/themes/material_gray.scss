@@ -1,7 +1,7 @@
-$text: #000;
-$link: #111;
-$accent: #3b5998;
+@import "../core/main";
+
+$text: #999999;
+$link: #00ff00;
+$accent: #dddddd;
 $background: #717171;
 $bg_transparent: $background;
-
-@import "../core/main";

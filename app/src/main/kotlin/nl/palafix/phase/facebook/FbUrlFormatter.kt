@@ -5,10 +5,10 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 /**
- * Created by Allan Wang on 2017-07-07.
- *
- * Custom url builder so we can easily test it without the Android framework
- */
+* Created by Allan Wang on 2017-07-07.
+*
+* Custom url builder so we can easily test it without the Android framework
+*/
 inline val String.formattedFbUrl: String
     get() = FbUrlFormatter(this).toString()
 
@@ -29,16 +29,18 @@ class FbUrlFormatter(url: String) {
         cleaned = clean(url)
     }
 
-    fun clean(url: String): String {
+    private fun clean(url: String): String {
         if (url.isBlank()) return ""
         var cleanedUrl = url
+        if (cleanedUrl.startsWith("#!")) cleanedUrl = cleanedUrl.substring(2)
+        val urlRef = cleanedUrl
         discardable.forEach { cleanedUrl = cleanedUrl.replace(it, "", true) }
-        val changed = cleanedUrl != url
+        val changed = cleanedUrl != urlRef
         converter.forEach { (k, v) -> cleanedUrl = cleanedUrl.replace(k, v, true) }
         try {
             cleanedUrl = URLDecoder.decode(cleanedUrl, StandardCharsets.UTF_8.name())
         } catch (e: Exception) {
-            L.e(e, "Failed url formatting")
+            L.e(e) { "Failed url formatting" }
             return url
         }
         if (changed && !cleanedUrl.contains("?")) //ensure we aren't missing '?'
@@ -54,10 +56,9 @@ class FbUrlFormatter(url: String) {
         discardableQueries.forEach { queries.remove(it) }
         //final cleanup
         misc.forEach { (k, v) -> cleanedUrl = cleanedUrl.replace(k, v, true) }
-        if (cleanedUrl.startsWith("#!")) cleanedUrl = cleanedUrl.substring(2)
         if (cleanedUrl.startsWith("/")) cleanedUrl = FB_URL_BASE + cleanedUrl.substring(1)
         cleanedUrl = cleanedUrl.replaceFirst(".facebook.com//", ".facebook.com/") //sometimes we are given a bad url
-        L.v(null, "Formatted url from $url to $cleanedUrl")
+        L.v { "Formatted url from $url to $cleanedUrl" }
         return cleanedUrl
     }
 

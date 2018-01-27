@@ -5,8 +5,8 @@ import android.os.Parcelable
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import nl.palafix.phase.facebook.FbItem
 import nl.palafix.phase.utils.L
-import nl.palafix.phase.utils.frostJsoup
-import nl.palafix.phase.utils.logFrostAnswers
+import nl.palafix.phase.utils.phaseJsoup
+import nl.palafix.phase.utils.logPhaseAnswers
 import com.raizlabs.android.dbflow.annotation.ConflictAction
 import com.raizlabs.android.dbflow.annotation.Database
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
@@ -19,7 +19,7 @@ import java.net.UnknownHostException
 
 /**
  * Created by Allan Wang on 2017-05-30.
- */
+ **/
 
 @Database(version = CookiesDb.VERSION)
 object CookiesDb {
@@ -52,29 +52,31 @@ fun loadFbCookiesAsync(callback: (cookies: List<CookieModel>) -> Unit) {
 fun loadFbCookiesSync(): List<CookieModel> = (select from CookieModel::class).orderBy(CookieModel_Table.name, true).queryList()
 
 
-fun saveFbCookie(cookie: CookieModel, callback: (() -> Unit)? = null) {
+inline fun saveFbCookie(cookie: CookieModel, crossinline callback: (() -> Unit) = {}) {
     cookie.async save {
-        L.d("Fb cookie saved", cookie.toString())
-        callback?.invoke()
+        L.d { "Fb cookie saved" }
+        L._d { cookie }
+        callback()
     }
 }
 
 fun removeCookie(id: Long) {
     loadFbCookie(id)?.async?.delete {
-        L.d("Fb cookie deleted", id.toString())
+        L.d { "Fb cookie deleted" }
+        L._d { id }
     }
 }
 
-fun CookieModel.fetchUsername(callback: (String) -> Unit) {
+inline fun CookieModel.fetchUsername(crossinline callback: (String) -> Unit) {
     ReactiveNetwork.checkInternetConnectivity().subscribeOn(Schedulers.io()).subscribe { yes, _ ->
         if (!yes) return@subscribe callback("")
         var result = ""
         try {
-            result = frostJsoup(cookie, FbItem.PROFILE.url).title()
-            L.d("Fetch username found", result)
+            result = phaseJsoup(cookie, FbItem.PROFILE.url).title()
+            L.d { "Fetch username found" }
         } catch (e: Exception) {
             if (e !is UnknownHostException)
-                e.logFrostAnswers("Fetch username failed")
+                e.logPhaseAnswers("Fetch username failed")
         } finally {
             if (result.isBlank() && (name?.isNotBlank() == true)) {
                 callback(name!!)

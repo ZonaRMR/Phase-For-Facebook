@@ -1,22 +1,27 @@
 package nl.palafix.phase.facebook
 
-
 import android.support.annotation.StringRes
 import com.mikepenz.community_material_typeface_library.CommunityMaterial
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import nl.palafix.phase.R
-import nl.palafix.phase.web.FrostWebViewClient
-import nl.palafix.phase.web.FrostWebViewClientMenu
-import nl.palafix.phase.web.FrostWebViewCore
+import nl.palafix.phase.fragments.BaseFragment
+import nl.palafix.phase.fragments.MenuFragment
+import nl.palafix.phase.fragments.NotificationFragment
+import nl.palafix.phase.fragments.WebFragment
+import nl.palafix.phase.utils.EnumBundle
+import nl.palafix.phase.utils.EnumBundleCompanion
+import nl.palafix.phase.utils.EnumCompanion
+
 
 enum class FbItem(
         @StringRes val titleId: Int,
         val icon: IIcon,
         relativeUrl: String,
-        val webClient: ((webCore: FrostWebViewCore) -> FrostWebViewClient)? = null
-) {
+        val fragmentCreator: () -> BaseFragment = ::WebFragment
+) : EnumBundle<FbItem> {
+
     ACTIVITY_LOG(R.string.activity_log, GoogleMaterial.Icon.gmd_list, "me/allactivity"),
     BIRTHDAYS(R.string.birthdays, GoogleMaterial.Icon.gmd_cake, "events/birthdays"),
     CHAT(R.string.chat, GoogleMaterial.Icon.gmd_chat, "buddylist"),
@@ -26,26 +31,25 @@ enum class FbItem(
     FEED_TOP_STORIES(R.string.top_stories, GoogleMaterial.Icon.gmd_star, "home.php?sk=h_nor"),
     FRIENDS(R.string.friends, GoogleMaterial.Icon.gmd_person_add, "friends/center/requests"),
     GROUPS(R.string.groups, GoogleMaterial.Icon.gmd_group, "groups"),
-    MENU(R.string.menu, GoogleMaterial.Icon.gmd_menu, "settings", { FrostWebViewClientMenu(it) }),
+    MENU(R.string.menu, GoogleMaterial.Icon.gmd_menu, "settings", ::MenuFragment),
     MESSAGES(R.string.messages, MaterialDesignIconic.Icon.gmi_comments, "messages"),
     NOTES(R.string.notes, CommunityMaterial.Icon.cmd_note, "notes"),
-    NOTIFICATIONS(R.string.notifications, MaterialDesignIconic.Icon.gmi_globe, "notifications"),
+    NOTIFICATIONS(R.string.notifications, MaterialDesignIconic.Icon.gmi_globe, "notifications", ::NotificationFragment),
     ON_THIS_DAY(R.string.on_this_day, GoogleMaterial.Icon.gmd_today, "onthisday"),
     PAGES(R.string.pages, GoogleMaterial.Icon.gmd_flag, "pages"),
     PHOTOS(R.string.photos, GoogleMaterial.Icon.gmd_photo, "me/photos"),
     PROFILE(R.string.profile, CommunityMaterial.Icon.cmd_account, "me"),
     SAVED(R.string.saved, GoogleMaterial.Icon.gmd_bookmark, "saved"),
     _SEARCH(R.string.search_menu_title, GoogleMaterial.Icon.gmd_search, "search/top"),
-    SETTINGS(R.string.settings, GoogleMaterial.Icon.gmd_settings, "settings"),
-    POKE(R.string.pokes, GoogleMaterial.Icon.gmd_thumb_up, "pokes"),
+    SETTINGS(R.string.settings, GoogleMaterial.Icon.gmd_settings, "settings/"),
+	POKE(R.string.pokes, GoogleMaterial.Icon.gmd_thumb_up, "pokes"),
     ;
+
     val url = "$FB_URL_BASE$relativeUrl"
+
+    override val bundleContract: EnumBundleCompanion<FbItem>
+        get() = Companion
+
+    companion object : EnumCompanion<FbItem>("phase_arg_fb_item", values())
 }
-
-inline val fbSearch
-    get() = fbSearch()
-
-fun fbSearch(query: String = "a") = "${FB_SEARCH}$query"
-
-private const val FB_SEARCH = "${FB_URL_BASE}search/top/?q="
 fun defaultTabs(): List<FbItem> = listOf(FbItem.FEED, FbItem.FRIENDS, FbItem.MESSAGES, FbItem.NOTIFICATIONS, FbItem.MENU)

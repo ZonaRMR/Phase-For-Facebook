@@ -1,23 +1,42 @@
 <resources>
-    <!--Tabs-->
 
 
-    <string name="theme_default">Default</string>
-    <string name="theme_gray">Gray</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_amoled">Amoled</string>
-    <string name="theme_glass">Glass</string>
-    <string name="theme_custom">Custom</string>
 
-    <string name="video_upload">Upload Video</string>
+
+
+    <string name="google">Google</string>
+
+    <string name="more">Foto\'s en meer </string>
+    <string name="trending">Trending</string>
+    <string name="faved">Favorite</string>
+    <string name="favorites">Favorites</string>
+    <string name="friends1">Friends</string>
+    <string name="albums">Albums + Upload</string>
+    <string name="reminders">Events, Reminders &amp; Birthdays</string>
+    <string name="savenotes">Saved &amp; Notes</string>
+
+    <string name="appversion">App Version</string>
+
+    <string name="video_beta">Video Settings may not work</string>
+    <string name="video_settings">Video Settings</string>
     <string name="pokes">Pokes</string>
     <string name="fab">Fab</string>
 
-    <string name="feed">Feed</string>
+    <string name="feed">News Feed</string>
     <string name="most_recent">Most Recent</string>
     <string name="top_stories">Top Stories</string>
     <string name="profile">Profile</string>
+
     <string name="bookmarks">Bookmarks</string>
+    <string name="add_bookmark">Add Bookmark</string>
+    <string name="added">Added (</string>
+    <string name="added_string">) to Favorite</string>
+    <string name="deleted">Delete favorite?</string>
+    <string name="deleted_dia">Are you sure you would like to remove (</string>
+    <string name="deleted_dia_2">) from your favorites? This action cannot be undone.</string>
+    <string name="refresh_bookmark">Refresh bookmarks</string>
+    <string name="bookmark_beta">(Beta)</string>
+
     <string name="events">Events</string>
     <string name="friends">Friends</string>
     <string name="messages">Messages</string>
@@ -34,14 +53,13 @@
     <string name="notes">Notes</string>
     <string name="on_this_day">On This Day</string>
 
-    <!--Login-->
-
     <string name="loading_account">Getting everything ready…</string>
     <string name="welcome">Welcome %s</string>
     <string name="select_facebook_account">Select Facebook Account</string>
     <string name="account_not_found">Current account is not in the database</string>
 
-    <string name="frost_notifications">Phase Notifications</string>
+	<string name="phase_requests">Phase Requests</string>
+    <string name="phase_notifications">Phase Notifications</string>
     <string name="requires_custom_theme">Requires custom theme</string>
 
     <string name="subject">Subject</string>
@@ -55,14 +73,11 @@
 
     <string name="show_all_results">Show All Results</string>
 
-    <!--About-->
 
-    <string name="frost_description">Phase is a fully themable,
+    <string name="phase_description">Phase is a fully themable,
         fully functional alternative to the official Facebook app, made from scratch and proudly open sourced.</string>
 
     <string name="faq_title">Phase FAQ</string>
-
-    <!--HTML Extractor-->
 
     <string name="html_extraction_error">An error occurred in the html extraction.</string>
     <string name="html_extraction_cancelled">The request has been cancelled.</string>
@@ -75,6 +90,7 @@
     <string name="pip" translatable="false">PIP</string>
     <string name="preview">Preview</string>
     <string name="options">Options</string>
-    <string name="tab_customizer_instructions">Drag and drop the icons above to rearrange them.\nDouble tap an icon above to remove it.\nTap an icon below to add it to the toolbar if there is space.</string>
+    <string name="tab_customizer_instructions">Long press and drag to rearrange the top icons.</string>
+
 
 </resources>

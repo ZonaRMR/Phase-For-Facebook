@@ -7,19 +7,15 @@ import ca.allanwang.kau.utils.startPlayStoreLink
 import ca.allanwang.kau.utils.string
 import com.crashlytics.android.answers.PurchaseEvent
 import nl.palafix.phase.R
-import nl.palafix.phase.activities.MainActivity
 import nl.palafix.phase.activities.SettingsActivity
-import nl.palafix.phase.utils.L
-import nl.palafix.phase.utils.Prefs
-import nl.palafix.phase.utils.frostAnswers
-import nl.palafix.phase.utils.materialDialogThemed
+import nl.palafix.phase.utils.*
 
 /**
  * Created by Allan Wang on 2017-06-30.
  */
 
 private fun playStoreLog(text: String) {
-    L.e(Throwable(text), "IAB Play Store Exception")
+    L.e(Throwable(text)) { "IAB Play Store Exception" }
 }
 
 /**
@@ -27,15 +23,15 @@ private fun playStoreLog(text: String) {
  */
 private fun Activity.playRestart() {
     if (this is SettingsActivity) {
-        setResult(MainActivity.REQUEST_RESTART)
+        setResult(REQUEST_RESTART)
         finish()
     } else restart()
 }
 
 fun Activity?.playStoreNoLongerPro() {
     Prefs.pro = false
-    L.d("IAB No longer pro")
-    frostAnswers {
+    L.d { "IAB No longer pro" }
+    phaseAnswers {
         logPurchase(PurchaseEvent()
                 .putCustomAttribute("result", "no longer pro")
                 .putSuccess(false))
@@ -53,7 +49,7 @@ fun Activity?.playStoreNoLongerPro() {
 
 fun Activity?.playStoreFoundPro() {
     Prefs.pro = true
-    L.d("Found pro")
+    L.d { "Found pro" }
     if (this == null) return
     materialDialogThemed {
         title(R.string.found_pro)
@@ -66,7 +62,7 @@ fun Activity?.playStoreFoundPro() {
 }
 
 fun Activity.playStorePurchaseUnsupported() {
-    L.d("Play store not found")
+    L.d { "Play store not found" }
     materialDialogThemed {
         title(R.string.uh_oh)
         content(R.string.play_store_unsupported)
@@ -79,7 +75,7 @@ fun Activity.playStorePurchaseUnsupported() {
 }
 
 fun Activity.playStorePurchasedSuccessfully(key: String) {
-    L.d("Play store purchased $key successfully")
+    L.d { "Play store purchased $key successfully" }
     materialDialogThemed {
         title(R.string.play_thank_you)
         content(R.string.play_purchased_pro)
@@ -90,7 +86,7 @@ fun Activity.playStorePurchasedSuccessfully(key: String) {
 }
 
 fun Activity.purchaseRestored() {
-    L.d("Purchase restored")
+    L.d { "Purchase restored" }
     materialDialogThemed {
         title(R.string.play_thank_you)
         content(R.string.purchases_restored_with_pro)

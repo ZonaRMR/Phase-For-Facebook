@@ -9,8 +9,10 @@ import android.webkit.*
 import ca.allanwang.kau.utils.fadeIn
 import ca.allanwang.kau.utils.isVisible
 import nl.palafix.phase.dbflow.CookieModel
-import nl.palafix.phase.facebook.FB_URL_BASE
+import nl.palafix.phase.facebook.FB_LOGIN_URL
+import nl.palafix.phase.facebook.FB_USER_MATCHER
 import nl.palafix.phase.facebook.FbCookie
+import nl.palafix.phase.facebook.get
 import nl.palafix.phase.injectors.CssHider
 import nl.palafix.phase.injectors.jsInject
 import nl.palafix.phase.utils.L
@@ -26,20 +28,11 @@ class LoginWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
-    companion object {
-        const val LOGIN_URL = "${FB_URL_BASE}login"
-        private val userMatcher: Regex = Regex("c_user=([0-9]*);")
-    }
-
     private lateinit var loginCallback: (CookieModel) -> Unit
     private lateinit var progressCallback: (Int) -> Unit
 
-    init {
-        FbCookie.reset { setupWebview() }
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
-    fun setupWebview() {
+    private fun setupWebview() {
         settings.javaScriptEnabled = true
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webViewClient = LoginClient()
@@ -49,8 +42,11 @@ class LoginWebView @JvmOverloads constructor(
     fun loadLogin(progressCallback: (Int) -> Unit, loginCallback: (CookieModel) -> Unit) {
         this.progressCallback = progressCallback
         this.loginCallback = loginCallback
-        L.d("Begin loading login")
-        loadUrl(LOGIN_URL)
+        L.d { "Begin loading login" }
+        FbCookie.reset {
+            setupWebview()
+            loadUrl(FB_LOGIN_URL)
+        }
     }
 
     private inner class LoginClient : BaseWebViewClient() {
@@ -65,14 +61,15 @@ class LoginWebView @JvmOverloads constructor(
             doAsync {
                 if (!url.isFacebookUrl) return@doAsync
                 val cookie = CookieManager.getInstance().getCookie(url) ?: return@doAsync
-                L.d("Checking cookie for login", cookie)
-                val id = userMatcher.find(cookie)?.groups?.get(1)?.value?.toLong() ?: return@doAsync
+                L.d { "Checking cookie for login" }
+                val id = FB_USER_MATCHER.find(cookie)[1]?.toLong() ?: return@doAsync
                 uiThread { onFound(id, cookie) }
             }
         }
 
         override fun onPageCommitVisible(view: WebView, url: String?) {
             super.onPageCommitVisible(view, url)
+            L.d { "Login page commit visible" }
             view.setBackgroundColor(Color.TRANSPARENT)
             if (url.isFacebookUrl)
                 view.jsInject(CssHider.HEADER,
@@ -88,9 +85,9 @@ class LoginWebView @JvmOverloads constructor(
         }
     }
 
-    inner class LoginChromeClient : WebChromeClient() {
+    private inner class LoginChromeClient : WebChromeClient() {
         override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-            L.d("Login Console ${consoleMessage.lineNumber()}: ${consoleMessage.message()}")
+            L.v { "Login Console ${consoleMessage.lineNumber()}: ${consoleMessage.message()}" }
             return true
         }
 

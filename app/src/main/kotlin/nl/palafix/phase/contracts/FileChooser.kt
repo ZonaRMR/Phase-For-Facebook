@@ -13,7 +13,7 @@ import nl.palafix.phase.utils.L
 
 /**
  * Created by Allan Wang on 2017-07-04.
- */
+ **/
 const val MEDIA_CHOOSER_RESULT = 67
 
 interface FileChooserActivityContract {
@@ -45,7 +45,7 @@ class FileChooserDelegate : FileChooserContract {
     }
 
     override fun Activity.onActivityResultWeb(requestCode: Int, resultCode: Int, intent: Intent?): Boolean {
-        L.d("FileChooser On activity results web $requestCode")
+        L.d { "FileChooser On activity results web $requestCode" }
         if (requestCode != MEDIA_CHOOSER_RESULT) return false
         val data = intent?.data
         filePathCallback?.onReceiveValue(if (data != null) arrayOf(data) else null)

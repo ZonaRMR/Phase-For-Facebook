@@ -5,13 +5,15 @@ android:
   components:
   - tools
   - platform-tools
-  - build-tools-26.0.2
-  - android-26
+  - build-tools-27.0.2
+  - android-27
   - extra-android-support
   - extra-android-m2repository
   - extra-google-m2repository
   licenses:
   - ".+"
+before_install:
+- yes | sdkmanager "platforms;android-27"
 after_success:
 - chmod +x ./generate-apk-release.sh; ./generate-apk-release.sh
 script:
@@ -24,14 +26,14 @@ notifications:
   email: false
   slack:
     rooms:
-    - pitchedapps:G5OB9U1vsDxy9mxt0Nt6gbFu#frost-for-facebook
+    - phaseapps:#phase-for-facebook
     on_success: always
     on_failure: always
     template:
-    - Frost Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of
+    - Phase Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of
       %{repository}@%{branch} %{result} in %{duration}
     - "%{commit_subject}"
-    - "<https://github.com/AllanWang/Frost-for-Facebook-APK-Builder/releases/tag/v%{build_number}|APK
+    - "<https://github.com/Palafix/Phase-for-Facebook-APK-Builder/releases/tag/v%{build_number}|APK
       Download>"
 sudo: false
 branches:

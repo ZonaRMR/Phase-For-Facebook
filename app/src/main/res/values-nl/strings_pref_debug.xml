@@ -10,5 +10,11 @@
 
      <string name = "debug_incomplete">Onvolledig rapport</string>
 
+    <string name = "debug_web">Foutopsporing van het web </string>
+    <string name = "debug_web_desc">Navigeer naar de pagina met een probleem en verzend de bronnen voor foutopsporing. </string>
 
+    <string name = "parsing_data">Parsing Data </string>
+
+    <string name = "debug_parsers">Parsers fout opsporen </string>
+    <string name = "debug_parsers_desc">Start een van de beschikbare parsers om de antwoordgegevens te debuggen </string>
 </resources>

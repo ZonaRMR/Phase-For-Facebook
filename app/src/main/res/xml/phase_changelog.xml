@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    <version title="v" />
+    <item text="" />
+    -->
+
+    <version title="v1.7.9" />
+    <item text="Add option to disable pip (settings > behaviour)" />
+
+    <version title="v1.7.8" />
+    <item text="Update facebook theme " />
+
+    <version title="v1.7.7" />
+    <item text="Fix overlay, now you can zoom in websites and sites auto fit in screen" />
+    <item text="Thimo!!!Dumpert.nl fixed. Videos now work" />
+    <item text="Bookmark looks better" />
+    <item text="Minor Bug Fixed" />
+
+    <version title="v1.7.6" />
+    <item text="Emergency fix for notifications" />
+    <item text="Add bookmark badge count in drawer, refresh to update counter.(Beta)" />
+    <item text="Fix image loading" />
+    <item text="Fix sending emails" />
+    <item text="Greatly improve load time by displaying page sooner" />
+    <item text="Fix blank web overlays" />
+    <item text="Revert back to m.facebook.com" />
+
+    <version title="v1.7.5" />
+    <item text="Added Bookmarks, now you can put web links in favorite" />
+    <item text="Minor Bug Fixed" />
+
+    <version title="v1.7.4" />
+    <item text="Launch image viewer when opening full sized image" />
+    <item text="Improve filtering system" />
+
+    <version title="v1.7.3" />
+    <item text="Fix overlay loading" />
+    <item text="Improve image loading" />
+
+    <version title="v1.7.2" />
+    <item text="Mark notifications as read when clicked!" />
+    <item text="Create menu parser" />
+    <item text="Implement automatic web fallback" />
+    <item text="Optimize logging" />
+    <item text="Fix link loading for some locations (eg changing profile pictures)" />
+
+    <version title="v1.7.1" />
+    <item text="Bug Fixed (By Robin Bouwman)" />
+
+    <version title="v1.7.0" />
+    <item text="Fixed AdBlocker, now you dont see Ads on Websites (By Robin Bouwman)" />
+
+    <version title="v1.6.9" />
+    <item text="Optimize login view" />
+    <item text="Rewrite parsers" />
+    <item text="Fix message notification icons" />
+    <item text="Small theme updates" />
+
+    <version title="v1.6.8.2" />
+    <item text="Fix launching messages in new overlay" />
+    <item text="Fix some errors in launching pages" />
+    <item text="Redid base design to prepare for native views" />
+    <item text="Automatically bring toolbar up when keyboard is shown" />
+    <item text="Rewrite theme components to fully support AMOLED and improve light" />
+    <item text="Properly pause webviews when not in use" />
+
+    <version title="v1.6.8" />
+    <item text="Fully customize your tabs! Check out settings > appearance > main activity tabs" />
+    <item text="Optimize scripts" />
+    <item text="Add more theme components" />
+    <item text="Fixed issue with deleting posts" />
+    <item text="Automatically close video player if url cannot be loaded" />
+    <item text="Added Change color of new notifications in Custom Theme" />
+
+    <version title="v1.6.7" />
+    <item text="Fix icons in tablets" />
+
+    <version title="v1.6.6" />
+    <item text="Fixed some themes." />
+    <item text="Added pore your friends." />
+
+    <version title="v1.6.5" />
+    <item text="Allow for truly full screen videos" />
+    <item text="Support pip video everywhere" />
+    <item text="Support gifs (auto loop)" />
+    <item text="Added Dutch translations (By Robin Bouwman)" />
+    <item text="Fix bad date param for videos and images" />
+    <item text="Allow for explicit intent launches" />
+    <item text="Updated all dependencies" />
+
+</resources>

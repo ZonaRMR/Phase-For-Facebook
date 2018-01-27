@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name = "skip">Skip </string>
-    <string name = "intro_welcome_to_frost">Welkom bij Phase </string>
+    <string name = "intro_welcome_to_phase">Welkom bij phase </string>
     <string name = "intro_slide_to_continue">Schuiven om verder te gaan </string>
     <string name = "intro_select_theme">Selecteer een thema </string>
-
+    <string name="got_it">Okey!</string>
     <string name = "intro_multiple_accounts">Meerdere accounts </string>
     <string name = "intro_multiple_accounts_desc">Voeg direct toe en wissel van account vanuit de navigatiebalk. \nTik op de huidige avatar om naar je profiel te springen. </string>
     <string name = "intro_easy_navigation">Eenvoudige navigatie </string>

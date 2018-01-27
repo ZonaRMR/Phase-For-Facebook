@@ -14,13 +14,26 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_scrollFlags="scroll|enterAlways"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <nl.palafix.phase.web.FrostWebView
-        android:id="@+id/overlay_frost_webview"
+    <include
+        layout="@layout/view_content_web"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize" />
+
+    <!--<nl.palafix.phase.views.PhaseRefreshView-->
+    <!--android:id="@+id/overlay_phase_refresh_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginTop="?attr/actionBarSize">-->
+
+    <!--<nl.palafix.phase.views.PhaseWebView-->
+    <!--android:id="@+id/overlay_phase_web_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+
+    <!--</nl.palafix.phase.views.PhaseRefreshView>-->
 
 </android.support.design.widget.CoordinatorLayout>

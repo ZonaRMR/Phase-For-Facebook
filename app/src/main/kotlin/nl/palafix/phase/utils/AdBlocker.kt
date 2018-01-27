@@ -1,46 +1,73 @@
 package nl.palafix.phase.utils
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
+import android.os.AsyncTask
+import android.os.Build
+import android.support.annotation.WorkerThread
 import android.text.TextUtils
-import ca.allanwang.kau.utils.use
+import android.webkit.WebResourceResponse
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.util.HashSet
 import okhttp3.HttpUrl
-import org.jetbrains.anko.doAsync
+import okio.Okio
 
-/**
- * Created by Allan Wang on 2017-09-24.
- */
-object FrostAdBlock : AdBlocker("adblock.txt")
 
-object FrostPglAdBlock : AdBlocker("pgl.yoyo.org.txt")
 
-/**
- * Base implementation of an AdBlocker
- * Wrap this in a singleton and initialize it to use it
- */
+object PhaseAdBlock : AdBlocker("adblock.txt")
+
+object PhasePglAdBlock : AdBlocker("pgl.yoyo.org.txt")
+
+
 open class AdBlocker(val assetPath: String) {
-
-    val data: MutableSet<String> = mutableSetOf()
-
-    fun init(context: Context) {
-        doAsync {
-            val content = context.assets.open(assetPath).bufferedReader().use { it.readLines().filter { !it.startsWith("#") } }
-            data.addAll(content)
-            L.i("Initialized adblock for $assetPath with ${data.size} hosts")
-        }
+  val AD_HOSTS_FILE = "adblock.txt"
+  val AD_HOSTS = HashSet<String>()
+  @SuppressLint("StaticFieldLeak")
+  fun init(context:Context) {
+      object : AsyncTask<Void, Void, Void>() {
+          val content = context.assets.open(assetPath).bufferedReader().use { it.readLines().filter { !it.startsWith("#") } }
+          override fun doInBackground(vararg params: Void): Void? {
+              try {
+                  loadFromAssets(context)
+              } catch (e: IOException) {
+                  // noop
+              }
+              return null
+          }
+      }.execute()
+  }
+  @WorkerThread
+  @Throws(IOException::class)
+  fun loadFromAssets(context:Context) {
+    val stream = context.assets.open(AD_HOSTS_FILE)
+    val buffer = Okio.buffer(Okio.source(stream))
+    var line: String? = null
+    while ({line = buffer.readUtf8Line(); line }() != null)
+    {
+      AD_HOSTS.add(line!!)
     }
+    buffer.close()
+    stream.close()
+  }
 
-    fun isAd(url: String?): Boolean {
-        url ?: return false
-        val httpUrl = HttpUrl.parse(url) ?: return false
-        return isAdHost(httpUrl.host())
-    }
+  fun isAd(url:String):Boolean {
+    val httpUrl = HttpUrl.parse(url)
+    return isAdHost(if (httpUrl != null) httpUrl.host() else "")
+  }
 
-    tailrec fun isAdHost(host: String): Boolean {
-        if (TextUtils.isEmpty(host))
-            return false
-        val index = host.indexOf(".")
-        if (index < 0 || index + 1 < host.length) return false
-        if (host.contains(host)) return true
-        return isAdHost(host.substring(index + 1))
+  fun isAdHost(host:String):Boolean {
+    if (TextUtils.isEmpty(host))
+    {
+      return false
     }
+    val index = host.indexOf(".")
+    return (index >= 0 && ((AD_HOSTS.contains(host) || index + 1 < host.length && isAdHost(host.substring(index + 1)))))
+  }
+
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+  fun createEmptyResource():WebResourceResponse {
+    return WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream("".toByteArray()))
+  }
 }
