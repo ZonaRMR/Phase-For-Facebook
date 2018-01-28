@@ -4,11 +4,11 @@
 
     <string name = "notifications_desc">Frequentie, filters, beltonen, etc</string>
 
-    <string name = "newsfeed">Nieuwsfeed</string>
+    <string name = "newsfeed">Nieuwsoverzicht</string>
     <string name = "newsfeed_desc">Definieer welke items in de nieuwsfeed verschijnen</string>
 
-    <string name = "behaviour">behaviour</string>
-    <string name = "behaviour_desc">Definieer hoe de app in bepaalde instellingen samenwerkt</string>
+    <string name = "behaviour">Gedrag</string>
+    <string name = "behaviour_desc">Definieer hoe de app in bepaalde instellingen reageert</string>
 
     <string name = "network">Netwerk</string>
     <string name = "network_desc">Definieer opties die van invloed zijn op gemeten netwerken</string>
@@ -17,16 +17,16 @@
     <string name = "experimental_desc">Vroegtijdige toegang tot mogelijk onstabiele functies inschakelen</string>
 
     <string name = "get_pro">Krijg Phase Pro</string>
-    <string name = "get_pro_desc">Koop of herstel pro en ontgrendel het volledige potentieel van Phase! Omvat adblockers, aangepaste thema\'s, volledige configuraties en nog veel meer!</string>
+    <string name = "get_pro_desc">Koop of herstel Pro en ontgrendel het volledige potentieel van phase! Omvat adblockers, aangepaste thema\'s, volledige configuraties en nog veel meer!</string>
 
-    <string name = "about_frost">Over Phase voor Facebook</string>
-    <string name = "about_frost_desc">Versie, Dankbetuigingen en veelgestelde vragen</string>
+    <string name = "about_phase">Over Phase voor Facebook</string>
+    <string name = "about_phase_desc">Versie, Dankbetuigingen en veelgestelde vragen</string>
 
     <string name = "help_translate">Help Vertalen</string>
-    <string name = "help_translate_desc">Phase is vertaald door crowdin. Draag bij als u het in uw taal wilt!</string>
+    <string name = "help_translate_desc">Phase/Frost is vertaald door crowdin. Draag bij als u het in uw taal wilt!</string>
 
-    <string name = "debug_frost">Phase Debugger</string>
-    <string name = "debug_frost_desc">Stuur html-gegevens om te helpen bij foutopsporing.</string>
+    <string name = "debug_phase">Phase Debugger</string>
+    <string name = "debug_phase_desc">Stuur html-gegevens om te helpen bij foutopsporing.</string>
 
-    <string name = "replay_intro">Replay Introduction</string>
+    <string name = "replay_intro">Herhaal Introduction</string>
 </resources>

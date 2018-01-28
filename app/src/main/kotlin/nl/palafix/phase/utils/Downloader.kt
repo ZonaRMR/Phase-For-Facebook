@@ -9,11 +9,12 @@ import android.webkit.URLUtil
 import ca.allanwang.kau.permissions.PERMISSION_WRITE_EXTERNAL_STORAGE
 import ca.allanwang.kau.permissions.kauRequestPermissions
 import ca.allanwang.kau.utils.isAppEnabled
+import ca.allanwang.kau.utils.showAppInfo
 import ca.allanwang.kau.utils.string
+import ca.allanwang.kau.utils.toast
 import nl.palafix.phase.R
 import nl.palafix.phase.dbflow.loadFbCookie
 import nl.palafix.phase.facebook.USER_AGENT_BASIC
-import ca.allanwang.kau.utils.showAppInfo
 
 
 /**
@@ -21,24 +22,26 @@ import ca.allanwang.kau.utils.showAppInfo
  *
  * With reference to <a href="https://stackoverflow.com/questions/33434532/android-webview-download-files-like-browsers-do">Stack Overflow</a>
  */
-fun Context.frostDownload(url: String?,
+fun Context.phaseDownload(url: String?,
                           userAgent: String = USER_AGENT_BASIC,
                           contentDisposition: String? = null,
                           mimeType: String? = null,
                           contentLength: Long = 0L) {
     url ?: return
-    frostDownload(Uri.parse(url), userAgent, contentDisposition, mimeType, contentLength)
+    phaseDownload(Uri.parse(url), userAgent, contentDisposition, mimeType, contentLength)
 }
 
-fun Context.frostDownload(uri: Uri?,
+fun Context.phaseDownload(uri: Uri?,
                           userAgent: String = USER_AGENT_BASIC,
                           contentDisposition: String? = null,
                           mimeType: String? = null,
                           contentLength: Long = 0L) {
     uri ?: return
-    L.d("Received download request", "Download $uri")
-    if (uri.scheme != "http" && uri.scheme != "https")
-        return L.e("Invalid download attempt", uri.toString())
+    L.d { "Received download request" }
+    if (uri.scheme != "http" && uri.scheme != "https") {
+        toast(R.string.error_invalid_download)
+        return L.e { "Invalid download $uri" }
+    }
     if (!isAppEnabled(DOWNLOAD_MANAGER_PACKAGE)) {
         materialDialogThemed {
             title(R.string.no_download_manager)
@@ -55,7 +58,7 @@ fun Context.frostDownload(uri: Uri?,
         request.setMimeType(mimeType)
         val cookie = loadFbCookie(Prefs.userId) ?: return@kauRequestPermissions
         val title = URLUtil.guessFileName(uri.toString(), contentDisposition, mimeType)
-        request.addRequestHeader("cookie", cookie.cookie)
+        request.addRequestHeader("Cookie", cookie.cookie)
         request.addRequestHeader("User-Agent", userAgent)
         request.setDescription(string(R.string.downloading))
         request.setTitle(title)
@@ -63,7 +66,12 @@ fun Context.frostDownload(uri: Uri?,
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Phase/$title")
         val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        dm.enqueue(request)
+        try {
+            dm.enqueue(request)
+        } catch (e: Exception) {
+            toast(R.string.error_generic)
+            L.e(e) { "Download" }
+        }
     }
 }
 

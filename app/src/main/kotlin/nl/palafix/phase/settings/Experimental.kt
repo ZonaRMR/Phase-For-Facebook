@@ -1,12 +1,12 @@
 package nl.palafix.phase.settings
 
+import android.util.Log
 import ca.allanwang.kau.kpref.activity.KPrefAdapterBuilder
 import ca.allanwang.kau.logging.KL
 import nl.palafix.phase.R
-import nl.palafix.phase.activities.MainActivity
 import nl.palafix.phase.activities.SettingsActivity
-import nl.palafix.phase.utils.L
 import nl.palafix.phase.utils.Prefs
+import nl.palafix.phase.utils.REQUEST_RESTART_APPLICATION
 import nl.palafix.phase.utils.Showcase
 
 /**
@@ -18,7 +18,7 @@ fun SettingsActivity.getExperimentalPrefs(): KPrefAdapterBuilder.() -> Unit = {
         descRes = R.string.experimental_disclaimer_info
     }
 
-    checkbox(R.string.experimental_by_default, { Showcase.experimentalDefault }, { Showcase.experimentalDefault = it }) {
+    checkbox(R.string.experimental_by_default, Showcase::experimentalDefault, { Showcase.experimentalDefault = it }) {
         descRes = R.string.experimental_by_default_desc
     }
 
@@ -27,22 +27,18 @@ fun SettingsActivity.getExperimentalPrefs(): KPrefAdapterBuilder.() -> Unit = {
 
     // Experimental content ends here --------------------
 
-    checkbox(R.string.verbose_logging, { Prefs.verboseLogging }, {
+    checkbox(R.string.verbose_logging, Prefs::verboseLogging, {
         Prefs.verboseLogging = it
-        KL.debug(it)
-        KL.showPrivateText = false
-        L.debug(it)
-        KL.showPrivateText = false
+        KL.shouldLog = { it != Log.VERBOSE }
     }) {
         descRes = R.string.verbose_logging_desc
     }
 
-    plainText(R.string.restart_frost) {
-        descRes = R.string.restart_frost_desc
-        onClick = { _, _, _ ->
-            setFrostResult(MainActivity.REQUEST_RESTART_APPLICATION)
+    plainText(R.string.restart_phase) {
+        descRes = R.string.restart_phase_desc
+        onClick = {
+            setPhaseResult(REQUEST_RESTART_APPLICATION)
             finish()
-            true
         }
     }
 }

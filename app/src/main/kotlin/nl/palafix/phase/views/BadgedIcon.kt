@@ -3,8 +3,10 @@ package nl.palafix.phase.views
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import ca.allanwang.kau.utils.*
@@ -15,7 +17,7 @@ import nl.palafix.phase.utils.Prefs
 
 /**
  * Created by Allan Wang on 2017-06-19.
- */
+ **/
 class BadgedIcon @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -52,4 +54,36 @@ class BadgedIcon @JvmOverloads constructor(
             else badgeTextView.gone()
         }
 
+
+    fun removeNotification(notificationCount: Int) {
+        badgeTextView.visibility = View.INVISIBLE
+        if (notificationCount <= 0) {
+            badgeTextView.text = notificationCount.toString()
+        }
+    }
+
+    var addfeed: String?
+        get() = badgeTextView.text.toString()
+        set(String) {
+            badgeTextView.gone()
+        val handler = Handler()
+        handler.postDelayed( {
+            val number = "1"
+                    if (badgeTextView.text == number) return@postDelayed
+                    badgeTextView.text = number
+                    if (number == "1") badgeTextView.visible()
+                    else badgeTextView.gone()
+                },300000)
+        handler.postDelayed( {
+            val number = "9+"
+                    if (badgeTextView.text == number) return@postDelayed
+                    badgeTextView.text = number
+                    if (number == "9+") badgeTextView.visible()
+                    else badgeTextView.gone()
+                },680000)
+    }
 }
+
+
+
+

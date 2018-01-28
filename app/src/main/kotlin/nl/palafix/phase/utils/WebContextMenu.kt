@@ -11,7 +11,7 @@ import nl.palafix.phase.facebook.formattedFbUrl
 
 /**
  * Created by Allan Wang on 2017-07-07.
- */
+ **/
 fun Context.showWebContextMenu(wc: WebContext) {
 
     var title = wc.url
@@ -49,7 +49,7 @@ enum class WebContextType(val textId: Int, val onClick: (c: Context, wc: WebCont
             content(R.string.debug_link_desc)
             positiveText(R.string.kau_ok)
             onPositive { _, _ ->
-                c.sendFrostEmail(R.string.debug_link_subject) {
+                c.sendPhaseEmail(R.string.debug_link_subject) {
                     message = c.string(R.string.debug_link_content)
                     addItem("Unformatted url", wc.unformattedUrl)
                     addItem("Formatted url", wc.url)

@@ -21,15 +21,15 @@ import nl.palafix.phase.R
 import nl.palafix.phase.enums.Support
 import nl.palafix.phase.settings.*
 import nl.palafix.phase.utils.*
-import nl.palafix.phase.utils.iab.FrostBilling
-import nl.palafix.phase.utils.iab.IS_FROST_PRO
+import nl.palafix.phase.utils.iab.PhaseBilling
+import nl.palafix.phase.utils.iab.IS_Phase_PRO
 import nl.palafix.phase.utils.iab.IabSettings
 
 
 /**
  * Created by Allan Wang on 2017-06-06.
- */
-class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
+ **/
+class SettingsActivity : KPrefActivity(), PhaseBilling by IabSettings() {
 
     var resultFlag = Activity.RESULT_CANCELED
 
@@ -37,10 +37,25 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
         private const val REQUEST_RINGTONE = 0b10111 shl 5
         const val REQUEST_NOTIFICATION_RINGTONE = REQUEST_RINGTONE or 1
         const val REQUEST_MESSAGE_RINGTONE = REQUEST_RINGTONE or 2
+        const val ACTIVITY_REQUEST_TABS = 29
+        const val ACTIVITY_REQUEST_DEBUG = 53
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (fetchRingtone(requestCode, resultCode, data)) return
+        when (requestCode) {
+            ACTIVITY_REQUEST_TABS -> {
+                if (resultCode == Activity.RESULT_OK)
+                    shouldRestartMain()
+                return
+            }
+            ACTIVITY_REQUEST_DEBUG -> {
+                val url = data?.extras?.getString(DebugActivity.RESULT_URL)
+                if (resultCode == Activity.RESULT_OK && url?.isNotBlank() == true)
+                    sendDebug(url)
+                return
+            }
+        }
         if (!onActivityResultBilling(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data)
         reloadList()
@@ -52,14 +67,22 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
      */
     private fun fetchRingtone(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode and REQUEST_RINGTONE != REQUEST_RINGTONE || resultCode != Activity.RESULT_OK) return false
-        val uri: String = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)?.toString() ?: ""
+        val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+        val uriString: String = uri?.toString() ?: ""
+        if (uri != null) {
+            try {
+                grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (e: Exception) {
+                L.e(e) { "grantUriPermission" }
+            }
+        }
         when (requestCode) {
             REQUEST_NOTIFICATION_RINGTONE -> {
-                Prefs.notificationRingtone = uri
+                Prefs.notificationRingtone = uriString
                 reloadByTitle(R.string.notification_ringtone)
             }
             REQUEST_MESSAGE_RINGTONE -> {
-                Prefs.messageRingtone = uri
+                Prefs.messageRingtone = uriString
                 reloadByTitle(R.string.message_ringtone)
             }
         }
@@ -71,7 +94,7 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
         accentColor = { Prefs.accentColor }
     }
 
-    override fun onCreateKPrefs(savedInstanceState: Bundle?): KPrefAdapterBuilder.() -> Unit = {
+   override fun onCreateKPrefs(savedInstanceState: Bundle?): KPrefAdapterBuilder.() -> Unit = {
 
 
         //checkbox(R.string.custom_pro, { Prefs.profree }, { Prefs.profree = it })
@@ -109,25 +132,28 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
         plainText(R.string.get_pro) {
             descRes = R.string.get_pro_desc
             iicon = GoogleMaterial.Icon.gmd_star
-            visible = { !IS_FROST_PRO }
-            onClick = { _, _, _ -> restorePurchases(); true }
+            visible = { !IS_Phase_PRO }
+            onClick = { restorePurchases() }
         }
 
-        plainText(R.string.about_frost) {
-            descRes = R.string.about_frost_desc
-            iicon = GoogleMaterial.Icon.gmd_info
-            onClick = { _, _, _ -> startActivityForResult(AboutActivity::class.java, 9, true); true }
-        }
-
+       plainText(R.string.about_phase) {
+           descRes = R.string.about_phase_desc
+           iicon = GoogleMaterial.Icon.gmd_info
+           onClick = {
+               startActivityForResult<AboutActivity>(9, bundleBuilder = {
+                   withSceneTransitionAnimation(this@SettingsActivity)
+               })
+           }
+       }
         plainText(R.string.help_translate) {
             descRes = R.string.help_translate_desc
             iicon = GoogleMaterial.Icon.gmd_translate
-            onClick = { _, _, _ -> startLink(R.string.translation_url); true }
+            onClick = { startLink(R.string.translation_url) }
         }
 
         plainText(R.string.replay_intro) {
             iicon = GoogleMaterial.Icon.gmd_replay
-            onClick = { _, _, _ -> launchIntroActivity(cookies()); true }
+            onClick = { launchNewTask<IntroActivity>(cookies(), true) }
         }
 
         subItems(R.string.experimental, getExperimentalPrefs()) {
@@ -135,8 +161,8 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
             iicon = CommunityMaterial.Icon.cmd_flask_outline
         }
 
-        subItems(R.string.debug_frost, getDebugPrefs()) {
-            descRes = R.string.debug_frost_desc
+        subItems(R.string.debug_phase, getDebugPrefs()) {
+            descRes = R.string.debug_phase_desc
             iicon = CommunityMaterial.Icon.cmd_android_debug_bridge
             visible = { Prefs.debugSettings }
         }
@@ -144,17 +170,17 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
     }
 
     fun KPrefItemBase.BaseContract<*>.dependsOnPro() {
-        onDisabledClick = { _, _, _ -> purchasePro(); true }
-        enabler = { IS_FROST_PRO }
+        onDisabledClick = { purchasePro() }
+        enabler = { IS_Phase_PRO }
     }
 
     fun shouldRestartMain() {
-        setFrostResult(MainActivity.REQUEST_RESTART)
+        setPhaseResult(REQUEST_RESTART)
     }
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setFrostTheme(true)
+        setPhaseTheme(true)
         super.onCreate(savedInstanceState)
         animate = Prefs.animate
         themeExterior(false)
@@ -166,7 +192,7 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
         else bgCanvas.set(Prefs.bgColor)
         if (animate) toolbarCanvas.ripple(Prefs.headerColor, RippleCanvas.MIDDLE, RippleCanvas.END)
         else toolbarCanvas.set(Prefs.headerColor)
-        frostNavigationBar()
+        phaseNavigationBar()
     }
 
     override fun onBackPressed() {
@@ -192,13 +218,13 @@ class SettingsActivity : KPrefActivity(), FrostBilling by IabSettings() {
                 items(Support.values().map { string(it.title) })
                 itemsCallback { _, _, which, _ -> Support.values()[which].sendEmail(this@SettingsActivity) }
             }
-            R.id.action_changelog -> frostChangelog()
+            R.id.action_changelog -> phaseChangelog()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
     }
 
-    fun setFrostResult(flag: Int) {
+    fun setPhaseResult(flag: Int) {
         resultFlag = resultFlag or flag
     }
 

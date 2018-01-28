@@ -16,19 +16,19 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name=".FrostApp"
+        android:name=".PhaseApp"
         android:allowBackup="true"
-        android:fullBackupContent="@xml/frost_backup_rules"
+        android:fullBackupContent="@xml/phase_backup_rules"
         android:icon="@mipmap/ic_launcher_round"
-        android:label="@string/frost_name"
+        android:label="@string/phase_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/FrostTheme.Splash">
+        android:theme="@style/PhaseTheme.Splash">
         <activity
             android:name=".StartActivity"
-            android:label="@string/frost_name"
+            android:label="@string/phase_name"
             android:noHistory="true"
-            android:theme="@style/FrostTheme.Splash">
+            android:theme="@style/PhaseTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -38,32 +38,41 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize|locale"
             android:hardwareAccelerated="true"
-            android:label="@string/frost_name"
-            android:theme="@style/FrostTheme" />
+            android:label="@string/phase_name"
+            android:theme="@style/PhaseTheme" />
         <activity
             android:name=".activities.WebOverlayActivity"
             android:configChanges="orientation|screenSize|locale"
             android:hardwareAccelerated="true"
-            android:label="@string/frost_name"
+            android:label="@string/phase_name"
             android:launchMode="singleTop"
-            android:theme="@style/FrostTheme.Overlay.Slide" />
+            android:theme="@style/PhaseTheme.Overlay.Slide" />
+
+        <activity
+            android:name=".activities.BookMarkActivity"
+            android:configChanges="orientation|screenSize|locale"
+            android:label="@string/bookmarks"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/PhaseTheme.Overlay.Slide"/>
+
         <activity
             android:name=".activities.WebOverlayBasicActivity"
             android:configChanges="orientation|screenSize|locale"
             android:hardwareAccelerated="true"
-            android:label="@string/frost_web"
+            android:label="@string/phase_web"
             android:launchMode="singleTop"
-            android:theme="@style/FrostTheme.Overlay.Slide" />
+            android:theme="@style/PhaseTheme.Overlay.Slide" />
         <activity
-            android:name=".activities.FrostWebActivity"
+            android:name=".activities.PhaseWebActivity"
             android:autoRemoveFromRecents="true"
             android:configChanges="orientation|screenSize|locale"
             android:exported="true"
             android:hardwareAccelerated="true"
-            android:label="@string/frost_web"
+            android:label="@string/phase_web"
             android:launchMode="singleInstance"
             android:taskAffinity="nl.palafix.phase.single.web"
-            android:theme="@style/FrostTheme.Overlay.Slide">
+            android:theme="@style/PhaseTheme.Overlay.Slide">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -123,30 +132,40 @@
         </activity>
         <activity
             android:name=".activities.IntroActivity"
-            android:theme="@style/FrostTheme.Intro" />
+            android:theme="@style/PhaseTheme.Intro" />
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/FrostTheme" />
+            android:theme="@style/PhaseTheme" />
         <activity
             android:name=".activities.SelectorActivity"
-            android:theme="@style/FrostTheme" />
+            android:theme="@style/PhaseTheme" />
         <activity
             android:name=".activities.TabCustomizerActivity"
-            android:theme="@style/FrostTheme" />
+            android:theme="@style/PhaseTheme" />
         <activity
             android:name=".activities.SettingsActivity"
-            android:theme="@style/FrostTheme.Settings" />
+            android:theme="@style/PhaseTheme.Settings" />
         <activity
             android:name=".activities.AboutActivity"
             android:theme="@style/Kau.About" />
         <activity
             android:name=".activities.ImageActivity"
-            android:theme="@style/FrostTheme.Transparent" />
+            android:theme="@style/PhaseTheme.Transparent" />
+			
+		<activity
+            android:name=".activities.DebugActivity"
+            android:theme="@style/PhaseTheme" />
 
         <service
             android:name=".services.NotificationService"
             android:enabled="true"
-            android:label="@string/frost_notifications"
+            android:label="@string/phase_notifications"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+			
+		<service
+            android:name=".services.PhaseRequestService"
+            android:enabled="true"
+            android:label="@string/phase_requests"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
@@ -166,6 +185,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <provider
+                 android:name="com.raizlabs.android.dbflow.runtime.StubContentProvider"
+                   android:authorities="${applicationId}.dbflow.provider"
+                  android:exported="false" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="cea41931aeaf7c4834c25c62ec7332405d119004" />

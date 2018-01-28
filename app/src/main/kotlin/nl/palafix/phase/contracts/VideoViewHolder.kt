@@ -5,15 +5,15 @@ import android.widget.FrameLayout
 import ca.allanwang.kau.utils.inflate
 import nl.palafix.phase.R
 import nl.palafix.phase.utils.L
-import nl.palafix.phase.views.FrostVideoContainerContract
-import nl.palafix.phase.views.FrostVideoViewer
+import nl.palafix.phase.views.PhaseVideoContainerContract
+import nl.palafix.phase.views.PhaseVideoViewer
 
 /**
  * Created by Allan Wang on 2017-11-10.
  */
-interface VideoViewHolder : FrameWrapper, FrostVideoContainerContract {
+interface VideoViewHolder : FrameWrapper, PhaseVideoContainerContract {
 
-    var videoViewer: FrostVideoViewer?
+    var videoViewer: PhaseVideoViewer?
 
     fun showVideo(url: String)
             = showVideo(url, false)
@@ -26,7 +26,7 @@ interface VideoViewHolder : FrameWrapper, FrostVideoContainerContract {
         if (videoViewer != null)
             videoViewer?.setVideo(url, repeat)
         else
-            videoViewer = FrostVideoViewer.showVideo(url, repeat, this)
+            videoViewer = PhaseVideoViewer.showVideo(url, repeat, this)
     }
 
     fun videoOnStop() = videoViewer?.pause()
@@ -37,7 +37,7 @@ interface VideoViewHolder : FrameWrapper, FrostVideoContainerContract {
         get() = frameWrapper
 
     override fun onVideoFinished() {
-        L.d("Video view released")
+        L.d { "Video view released" }
         videoViewer = null
     }
 }

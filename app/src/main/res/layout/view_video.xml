@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:clickable="false"
-    android:theme="@style/FrostTheme.Video">
+    android:theme="@style/PhaseTheme.Video">
 
     <View
         android:id="@+id/video_background"
@@ -14,12 +14,12 @@
         android:layout_height="match_parent"
         android:clickable="false" />
 
-    <nl.palafix.phase.views.FrostVideoView
+    <nl.palafix.phase.views.PhaseVideoView
         android:id="@+id/video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:theme="@style/FrostTheme.Video"
+        android:theme="@style/PhaseTheme.Video"
         app:useDefaultControls="true"
         app:useTextureViewBacking="true">
 
@@ -30,12 +30,14 @@
             android:layout_centerInParent="true"
             android:foregroundGravity="center" />
 
-    </nl.palafix.phase.views.FrostVideoView>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/video_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/video_toolbar"
-        android:layout_width="match_parent"
-        android:background="@drawable/exomedia_default_controls_interactive_background"
-        android:layout_height="?attr/actionBarSize" />
+    </nl.palafix.phase.views.PhaseVideoView>
 
 </merge>

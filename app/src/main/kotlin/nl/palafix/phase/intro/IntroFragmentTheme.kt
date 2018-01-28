@@ -14,7 +14,7 @@ import nl.palafix.phase.utils.Prefs
  */
 class IntroFragmentTheme : BaseIntroFragment(R.layout.intro_theme) {
 
-    val gray: View by bindViewResettable(R.id.intro_theme_light)
+    val gray: View by bindViewResettable(R.id.intro_theme_gray)
     val dark: View by bindViewResettable(R.id.intro_theme_dark)
     val amoled: View by bindViewResettable(R.id.intro_theme_amoled)
     val glass: View by bindViewResettable(R.id.intro_theme_glass)

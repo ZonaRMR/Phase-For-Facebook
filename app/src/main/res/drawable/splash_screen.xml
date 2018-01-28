@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/frost_splash_background" />
+    <item android:drawable="@color/phase_splash_background" />
     <item android:bottom="@dimen/splash_logo">
         <bitmap
             android:gravity="center"

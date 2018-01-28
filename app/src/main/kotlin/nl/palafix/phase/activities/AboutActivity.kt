@@ -28,15 +28,15 @@ import nl.palafix.phase.utils.Prefs
 
 /**
  * Created by Allan Wang on 2017-06-26.
- */
+ **/
 class AboutActivity : AboutActivityBase(null, {
     textColor = Prefs.textColor
     accentColor = Prefs.accentColor
     backgroundColor = Prefs.bgColor.withMinAlpha(200)
     cutoutForeground = Prefs.accentColor
-    cutoutDrawableRes = R.drawable.frost_f_256
+    cutoutDrawableRes = R.drawable.phase_f_256
     faqPageTitleRes = R.string.faq_title
-    faqXmlRes = R.xml.frost_faq
+    faqXmlRes = R.xml.phase_faq
     faqParseNewLine = false
 }) {
 
@@ -56,11 +56,12 @@ class AboutActivity : AboutActivityBase(null, {
                 "materialdialogs",
                 "materialdrawer",
                 "rxjava",
-                "subsamplingscaleimageview"
+                "subsamplingscaleimageview",
+                "Realm"
         )
 
         val l = libs.prepareLibraries(this, include, null, false, true)
-//        l.forEach { KL.d("Lib ${it.definedName}") }
+//        l.forEach { KL.d{"Lib ${it.definedName}"} }
         return l
     }
 
@@ -69,21 +70,21 @@ class AboutActivity : AboutActivityBase(null, {
 
     override fun postInflateMainPage(adapter: FastItemThemedAdapter<IItem<*, *>>) {
         /**
-         * Frost may not be a library but we're conveying the same info
+         * Phase may not be a library but we're conveying the same info
          */
-        val frost = Library().apply {
-            libraryName = string(R.string.frost_name)
+        val Phase = Library().apply {
+            libraryName = string(R.string.phase_name)
             author = string(R.string.dev_name)
             libraryWebsite = string(R.string.github_url)
             isOpenSource = true
-            libraryDescription = string(R.string.frost_description)
+            libraryDescription = string(R.string.phase_description)
             libraryVersion = BuildConfig.VERSION_NAME
             license = License().apply {
                 licenseName = "GNU GPL v3"
                 licenseWebsite = "https://www.gnu.org/licenses/gpl-3.0.en.html"
             }
         }
-        adapter.add(LibraryIItem(frost)).add(AboutLinks())
+        adapter.add(LibraryIItem(Phase)).add(AboutLinks())
         adapter.withOnClickListener { _, _, item, _ ->
             if (item is LibraryIItem) {
                 val now = System.currentTimeMillis()
@@ -94,7 +95,7 @@ class AboutActivity : AboutActivityBase(null, {
                 lastClick = now
                 if (clickCount == 7 && !Prefs.debugSettings) {
                     Prefs.debugSettings = true
-                    L.d("Debugging section enabled")
+                    L.d { "Debugging section enabled" }
                     toast(R.string.debug_toast_enabled)
                 }
             }

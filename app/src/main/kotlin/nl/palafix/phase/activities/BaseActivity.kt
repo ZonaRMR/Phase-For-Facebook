@@ -4,18 +4,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.searchview.SearchViewHolder
-import com.github.pwittchen.reactivenetwork.library.rx2.Connectivity
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import nl.palafix.phase.contracts.VideoViewHolder
-import nl.palafix.phase.utils.L
-import nl.palafix.phase.utils.setFrostTheme
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import nl.palafix.phase.utils.setPhaseTheme
 
 /**
  * Created by Allan Wang on 2017-06-12.
- */
+ **/
 abstract class BaseActivity : KauBaseActivity() {
 
     /**
@@ -32,8 +26,9 @@ abstract class BaseActivity : KauBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (this !is WebOverlayActivityBase) setFrostTheme()
+        if (this !is WebOverlayActivityBase) setPhaseTheme()
     }
+
 //
 //    private var networkDisposable: Disposable? = null
 //    private var networkConsumer: ((Connectivity) -> Unit)? = null
@@ -49,7 +44,7 @@ abstract class BaseActivity : KauBaseActivity() {
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe { connectivity: Connectivity ->
 //                    connectivity.apply {
-//                        L.d("Network connectivity changed: isAvailable: $isAvailable isRoaming: $isRoaming")
+//                        L.d{"Network connectivity changed: isAvailable: $isAvailable isRoaming: $isRoaming"}
 //                        consumer(connectivity)
 //                    }
 //                }

@@ -11,11 +11,11 @@ import nl.palafix.phase.facebook.FB_URL_BASE
 enum class JsActions(body: String) : InjectorContract {
     /**
      * Redirects to login activity if create account is found
-     * see [nl.palafix.phase.web.FrostJSI.loadLogin]
+     * see [nl.palafix.phase.web.PhaseJSI.loadLogin]
      */
-    LOGIN_CHECK("document.getElementById('signup-button')&&Frost.loadLogin();"),
+    LOGIN_CHECK("document.getElementById('signup-button')&&Phase.loadLogin();"),
     BASE_HREF("""document.write("<base href='$FB_URL_BASE'/>");"""),
-    FETCH_BODY("""setTimeout(function(){var e=document.querySelector("main");e||(e=document.querySelector("body")),Frost.handleHtml(e.outerHTML)},1e2);"""),
+    FETCH_BODY("""setTimeout(function(){var e=document.querySelector("main");e||(e=document.querySelector("body")),Phase.handleHtml(e.outerHTML)},1e2);"""),
     /**
      * Used as a pseudoinjector for maybe functions
      */
@@ -23,5 +23,6 @@ enum class JsActions(body: String) : InjectorContract {
 
     val function = "!function(){$body}();"
 
-    override fun inject(webView: WebView, callback: ((String) -> Unit)?) = JsInjector(function).inject(webView, callback)
+    override fun inject(webView: WebView, callback: (() -> Unit)?) =
+            JsInjector(function).inject(webView, callback)
 }

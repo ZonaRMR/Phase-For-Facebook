@@ -1,12 +1,15 @@
 plugins {
-    id 'com.gladed.androidgitversion' version '0.3.4'
+    id 'com.gladed.androidgitversion' version '0.4.3'
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.triplet.play'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'realm-android'
 
 def withPlaySigning = file('../files/gplay-keys.json').exists()
 /*
@@ -24,8 +27,8 @@ if (withPlaySigning)
     }
 
 android {
-    compileSdkVersion Integer.parseInt(project.TARGET_SDK)
-    buildToolsVersion project.BUILD_TOOLS
+    compileSdkVersion kau.targetSdk
+    buildToolsVersion kau.buildTools
 
     androidGitVersion {
         codeFormat = 'MMNNPPXX'
@@ -35,18 +38,27 @@ android {
 
     defaultConfig {
         applicationId "${project.APP_GROUP}." + project.APP_ID.toLowerCase(Locale.CANADA)
-        minSdkVersion Integer.parseInt(project.MIN_SDK)
-        targetSdkVersion Integer.parseInt(project.TARGET_SDK)
+        minSdkVersion kau.minSdk
+        targetSdkVersion kau.targetSdk
         versionCode Integer.parseInt(project.VERSION_CODE)
-        versionName "0.0.1"
+        versionName "1.7.9"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
 
     applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "${project.APP_ID}-${variant.buildType.name}.apk"
         }
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 
     lintOptions {
@@ -63,22 +75,31 @@ android {
     }
 
     signingConfigs {
+
         if (withPlaySigning) {
             def releaseProps = new Properties()
             file("../files/play.properties").withInputStream { releaseProps.load(it) }
 
+            release {
+                storeFile file("../files/play.keystore")
+                storePassword releaseProps.getProperty('storePassword')
+                keyAlias releaseProps.getProperty('keyAlias')
+                keyPassword releaseProps.getProperty('keyPassword')
+            }
         }
-        test {
-            storeFile file("../files/test.keystore")
-            storePassword "testkey"
-            keyAlias "testKey"
-            keyPassword "testkey"
-        }
+
         release {
             storeFile file('../files/phasekey.jks')
             storePassword '!Wintermans1'
             keyAlias 'palafix'
             keyPassword '!Wintermans1'
+        }
+
+        test {
+            storeFile file("../files/test.keystore")
+            storePassword "testkey"
+            keyAlias "testKey"
+            keyPassword "testkey"
         }
     }
 
@@ -88,8 +109,8 @@ android {
             shrinkResources false
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            resValue "string", "frost_name", "Phase Debug"
-            resValue "string", "frost_web", "Phase Web Debug"
+            resValue "string", "phase_name", "Phase Debug"
+            resValue "string", "phase_web", "Phase Web Debug"
             ext.enableCrashlytics = false
         }
         releaseTest {
@@ -99,17 +120,16 @@ android {
             applicationIdSuffix ".test"
             signingConfig signingConfigs.test
             versionNameSuffix "-test"
-            resValue "string", "frost_name", "Phase Test"
-            resValue "string", "frost_web", "Phase Web Test"
+            resValue "string", "phase_name", "Phase Test"
+            resValue "string", "phase_web", "Phase Web Test"
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (withPlaySigning) signingConfig signingConfigs.release
-            resValue "string", "frost_name", "Phase"
-            resValue "string", "frost_web", "Phase Web"
-            signingConfig signingConfigs.release
+            resValue "string", "phase_name", "Phase"
+            resValue "string", "phase_web", "Phase Web"
         }
     }
 
@@ -132,75 +152,92 @@ repositories {
 }
 
 dependencies {
-    androidTestImplementation("com.android.support.test:runner:${TEST_RUNNER}") {
+    androidTestImplementation("com.android.support.test:runner:${kau.testRunner}") {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:${KOTLIN}"
+
+    implementation "com.android.support:exifinterface:${kau.supportLibs}"
+
+    androidTestImplementation kauDependency.kotlinTest
     androidTestImplementation "com.android.support.test:rules:${TEST_RULE}"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${KOTLIN}"
-    testImplementation "junit:junit:${JUNIT}"
+    testImplementation kauDependency.kotlinTest
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${KOTLIN}"
+    testImplementation kauDependency.junit
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN}"
 
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:adapter:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:about:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:colorpicker:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:mediapicker:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:kpref-activity:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:searchview:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:core:$KAU"
-
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:core-ui:$KAU"
+
     implementation "org.apache.commons:commons-text:${COMMONS_TEXT}"
+
     implementation "com.devbrackets.android:exomedia:${EXOMEDIA}"
-    implementation "com.mikepenz:fastadapter-extensions:${FAST_ADAPTER_EXTENSIONS}@aar"
+
+    implementation"com.mikepenz:fastadapter-extensions:${kau.fastAdapter}@aar"
+
+    implementation "com.github.bumptech.glide:okhttp3-integration:${kau.glide}"
+    kapt "com.github.bumptech.glide:compiler:${kau.glide}"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.3"
 
     //noinspection GradleDependency
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY}"
-
     //noinspection GradleDependency
     releaseTestImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY}"
-
     //noinspection GradleDependency
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${LEAK_CANARY}"
+//    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY}"
 
-    //    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${LEAK_CANARY}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${DBFLOW}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${DBFLOW}"
     kapt "com.github.Raizlabs.DBFlow:dbflow-processor:${DBFLOW}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:${DBFLOW}"
 
     //Icons
-    implementation "com.mikepenz:material-design-iconic-typeface:${IICON_MATERIAL}@aar"
-    implementation "com.mikepenz:community-material-typeface:${IICON_COMMUNITY}@aar"
+    implementation "com.mikepenz:material-design-iconic-typeface:${kau.iconicsMaterial}@aar"
+    implementation "com.mikepenz:community-material-typeface:${kau.iconicsCommunity}@aar"
+
     implementation "org.jsoup:jsoup:${JSOUP}"
+
     implementation "com.squareup.okhttp3:okhttp:${OKHTTP}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${OKHTTP}"
+
     implementation "com.anjlab.android.iab.v3:library:${IAB}"
+
     implementation "co.zsmb:materialdrawer-kt:${MATERIAL_DRAWER_KT}"
+
     implementation "nz.bradcampbell:paperparcel:${PAPER_PARCEL}"
     implementation "nz.bradcampbell:paperparcel-kotlin:${PAPER_PARCEL}"
     kapt "nz.bradcampbell:paperparcel-compiler:${PAPER_PARCEL}"
+
     implementation("com.crashlytics.sdk.android:crashlytics:${CRASHLYTICS}@aar") {
         transitive = true
     }
+
     implementation "com.davemorrissey.labs:subsampling-scale-image-view:${SCALE_IMAGE_VIEW}"
+
     implementation "com.sothree.slidinguppanel:library:${SLIDING_PANEL}"
 
     //Reactive Libs
     implementation "io.reactivex.rxjava2:rxkotlin:${RX_KOTLIN}"
     implementation "io.reactivex.rxjava2:rxandroid:${RX_ANDROID}"
     implementation "com.github.pwittchen:reactivenetwork-rx2:${RX_NETWORK}"
+
+    kapt "android.arch.lifecycle:compiler:1.0.0"
+    //Realm Bookmarks.
+    implementation "io.realm:android-adapters:${REALM_BOOKMARKS}"
 }

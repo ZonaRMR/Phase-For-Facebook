@@ -1,54 +1,56 @@
 <resources>
 
-    <style name="FrostThemeBase" parent="MaterialDrawerTheme.ActionBar">
+    <style name="PhaseThemeBase" parent="MaterialDrawerTheme.ActionBar">
         <item name="colorPrimary">@color/facebook_blue</item>
         <item name="colorPrimaryDark">@color/facebook_blue_dark</item>
         <item name="colorAccent">@android:color/white</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
-    <style name="FrostTheme" parent="@style/FrostThemeBase">
+    <style name="PhaseTheme" parent="@style/PhaseThemeBase">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="FrostTheme.Light" parent="MaterialDrawerTheme.Light.DarkToolbar">
+    <style name="PhaseTheme.Light" parent="MaterialDrawerTheme.Light.DarkToolbar">
         <item name="colorPrimary">@color/facebook_blue</item>
         <item name="colorPrimaryDark">@color/facebook_blue_dark</item>
         <item name="colorAccent">@android:color/black</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
-    <style name="FrostTheme.Transparent">
+    <style name="PhaseTheme.Transparent">
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="FrostTheme.Light.Transparent">
+    <style name="PhaseTheme.Light.Transparent">
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="FrostTheme.Overlay">
+    <style name="PhaseTheme.Overlay">
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="FrostTheme.Overlay.Slide">
+    <style name="PhaseTheme.Overlay.Slide">
         <item name="android:windowAnimationStyle">@style/KauSlideInFadeOut</item>
     </style>
 
-    <style name="FrostTheme.Overlay.Fade">
+    <style name="PhaseTheme.Overlay.Fade">
         <item name="android:windowAnimationStyle">@style/KauFadeInFadeOut</item>
     </style>
 
-    <style name="FrostTheme.Video" parent="FrostTheme.Overlay.Fade">
+    <style name="PhaseTheme.Video" parent="PhaseTheme.Overlay.Fade">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="FrostTheme.Settings" parent="FrostTheme">
+    <style name="PhaseTheme.Settings" parent="PhaseTheme">
         <item name="android:windowAnimationStyle">@style/KauSlideInFadeOut</item>
     </style>
 
@@ -56,16 +58,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-    <style name="FrostTheme.Splash" parent="Theme.AppCompat.NoActionBar">
+    <style name="PhaseTheme.Splash" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="android:navigationBarColor">@color/frost_splash_background</item>
-        <item name="colorPrimaryDark">@color/frost_splash_background</item>
-        <item name="colorAccent">@color/frost_splash_background</item>
+        <item name="android:navigationBarColor">@color/phase_splash_background</item>
+        <item name="colorPrimaryDark">@color/phase_splash_background</item>
+        <item name="colorAccent">@color/phase_splash_background</item>
     </style>
 
-    <style name="FrostTheme.Intro" parent="FrostTheme.Transparent" />
+    <style name="PhaseTheme.Intro" parent="PhaseTheme.Transparent" />
 
-    <style name="FrostProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="phaseProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:minHeight">@dimen/progress_bar_height</item>
         <item name="android:maxHeight">@dimen/progress_bar_height</item>
     </style>

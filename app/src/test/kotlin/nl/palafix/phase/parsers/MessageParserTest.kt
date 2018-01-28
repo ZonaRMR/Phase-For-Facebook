@@ -1,12 +1,14 @@
 package nl.palafix.phase.parsers
 
+import nl.palafix.phase.facebook.FB_EPOCH_MATCHER
 import nl.palafix.phase.facebook.formattedFbUrl
+import nl.palafix.phase.facebook.get
 import org.junit.Test
 import kotlin.test.assertEquals
 
 /**
  * Created by Allan Wang on 2017-10-06.
- */
+ **/
 class MessageParserTest {
 
     @Test
@@ -15,7 +17,7 @@ class MessageParserTest {
     @Test
     fun parseEpoch() {
         val input = "{\"time\":1507301642,\"short\":true,\"forceseconds\":false}"
-        assertEquals(1507301642, FrostRegex.epoch.find(input)!!.groupValues[1].toLong())
+        assertEquals(1507301642, FB_EPOCH_MATCHER.find(input)[1]!!.toLong())
     }
 
     @Test

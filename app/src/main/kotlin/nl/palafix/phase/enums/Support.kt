@@ -4,11 +4,11 @@ import android.content.Context
 import android.support.annotation.StringRes
 import ca.allanwang.kau.utils.string
 import nl.palafix.phase.R
-import nl.palafix.phase.utils.sendFrostEmail
+import nl.palafix.phase.utils.sendPhaseEmail
 
 /**
  * Created by Allan Wang on 2017-06-29.
- */
+ **/
 enum class Support(@StringRes val title: Int) {
     FEEDBACK(R.string.feedback),
     BUG(R.string.bug_report),
@@ -17,7 +17,7 @@ enum class Support(@StringRes val title: Int) {
 
     fun sendEmail(context: Context) {
         with(context) {
-            this.sendFrostEmail("${string(R.string.frost_prefix)} ${string(title)}") {
+            this.sendPhaseEmail("${string(R.string.phase_prefix)} ${string(title)}") {
             }
         }
     }

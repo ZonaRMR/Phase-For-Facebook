@@ -14,12 +14,12 @@ import nl.palafix.phase.R
 import nl.palafix.phase.facebook.FbCookie
 import nl.palafix.phase.utils.cookies
 import nl.palafix.phase.utils.launchNewTask
-import nl.palafix.phase.utils.setFrostColors
+import nl.palafix.phase.utils.setPhaseColors
 import nl.palafix.phase.views.AccountItem
 
 /**
  * Created by Allan Wang on 2017-06-04.
- */
+ **/
 class SelectorActivity : BaseActivity() {
 
     val recycler: RecyclerView by bindView(R.id.selector_recycler)
@@ -38,10 +38,13 @@ class SelectorActivity : BaseActivity() {
             override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = (viewHolder as? AccountItem.ViewHolder)?.v
 
             override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<AccountItem>, item: AccountItem) {
-                if (item.cookie == null) this@SelectorActivity.launchNewTask(LoginActivity::class.java)
-                else FbCookie.switchUser(item.cookie, { launchNewTask(MainActivity::class.java, cookies()) })
+                if (item.cookie == null) this@SelectorActivity.launchNewTask<LoginActivity>()
+                else FbCookie.switchUser(item.cookie, { launchNewTask<MainActivity>(cookies()) })
             }
         })
-        setFrostColors(texts = arrayOf(text), backgrounds = arrayOf(container))
+        setPhaseColors {
+            text(text)
+            background(container)
+           }
     }
 }

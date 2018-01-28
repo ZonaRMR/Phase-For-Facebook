@@ -1,31 +1,38 @@
-// we will media events
-if (!window.hasOwnProperty('frost_media')) {
-  console.log('Registering frost_media');
-  window.frost_media = true;
+"use strict";
 
-  var _frostMediaClick = function(e) {
+(function () {
+  // we will handle media events
+  var _phaseMediaClick;
 
-    /*
-     * Commonality; check for valid target
-     */
-    var element = e.target || e.srcElement;
-    if (!element.hasAttribute("data-sigil") || !element.getAttribute("data-sigil").toLowerCase().includes("inlinevideo")) return;
-    console.log("Found inline video");
-    element = element.parentNode;
-    if (!element.hasAttribute("data-store")) return;
-    var dataStore;
-    try {
-      dataStore = JSON.parse(element.getAttribute("data-store"));
-    } catch (e) {
+  _phaseMediaClick = function _phaseMediaClick(e) {
+    var dataStore, element, i, ref, url;
+    element = e.target || e.srcElement;
+    if (!(element != null ? (ref = element.dataset.sigil) != null ? ref.toLowerCase().includes("inlinevideo") : void 0 : void 0)) {
       return;
     }
-    if (!dataStore.src) return;
-    console.log("Inline video " + dataStore.src);
-    if (typeof Frost !== 'undefined') Frost.loadVideo(dataStore.src, dataStore.animatedGifVideo);
-    e.stopPropagation();
-    e.preventDefault();
-    return;
-  }
+    i = 0;
+    while (!element.hasAttribute("data-store")) {
+      if (++i > 2) {
+        return;
+      }
+      element = element.parentNode;
+    }
+    try {
+      dataStore = JSON.parse(element.dataset.store);
+    } catch (error) {
+      e = error;
+      return;
+    }
+    url = dataStore.src;
+    if (!url || !url.startsWith("http")) {
+      return;
+    }
+    console.log("Inline video " + url);
+    if (typeof Phase !== "undefined" && Phase !== null ? Phase.loadVideo(url, dataStore.animatedGifVideo) : void 0) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
 
-  document.addEventListener('click', _frostMediaClick, true);
-}
+  document.addEventListener("click", _phaseMediaClick, true);
+}).call(undefined);

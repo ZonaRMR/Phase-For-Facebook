@@ -16,7 +16,7 @@ fun <T : Any> T.getResource(path: String): String? {
     return resource.readText()
 }
 
-fun <T : Any, P : Any> T.debug(path: String, parser: FrostParser<P>) {
+fun <T : Any, P : Any> T.debug(path: String, parser: PhaseParser<P>) {
     val content = getResource("priv/$path.html") ?: return
-    println(parser.debug(content))
+//    println(parser.debug(content))
 }

@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ImageView
 import ca.allanwang.kau.iitems.KauIItem
 import ca.allanwang.kau.utils.*
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -16,8 +15,9 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import nl.palafix.phase.R
 import nl.palafix.phase.dbflow.CookieModel
 import nl.palafix.phase.facebook.PROFILE_PICTURE_URL
+import nl.palafix.phase.glide.PhaseGlide
+import nl.palafix.phase.glide.GlideApp
 import nl.palafix.phase.utils.Prefs
-import nl.palafix.phase.utils.withRoundIcon
 
 /**
  * Created by Allan Wang on 2017-06-05.
@@ -25,14 +25,15 @@ import nl.palafix.phase.utils.withRoundIcon
 class AccountItem(val cookie: CookieModel?) : KauIItem<AccountItem, AccountItem.ViewHolder>
 (R.layout.view_account, { ViewHolder(it) }, R.id.item_account) {
 
-    override fun bindView(viewHolder: ViewHolder, payloads: List<Any>?) {
+    override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any>) {
         super.bindView(viewHolder, payloads)
         with(viewHolder) {
             text.invisible()
             text.setTextColor(Prefs.textColor)
             if (cookie != null) {
                 text.text = cookie.name
-                Glide.with(itemView).load(PROFILE_PICTURE_URL(cookie.id)).withRoundIcon().listener(object : RequestListener<Drawable> {
+                GlideApp.with(itemView).load(PROFILE_PICTURE_URL(cookie.id))
+                        .transform(PhaseGlide.roundCorner).listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         text.fadeIn()
                         return false

@@ -8,8 +8,8 @@ import com.crashlytics.android.answers.PurchaseEvent
 import nl.palafix.phase.BuildConfig
 import nl.palafix.phase.utils.L
 import nl.palafix.phase.utils.Prefs
-import nl.palafix.phase.utils.frostAnswers
-import nl.palafix.phase.utils.logFrostAnswers
+import nl.palafix.phase.utils.phaseAnswers
+import nl.palafix.phase.utils.logPhaseAnswers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
@@ -19,17 +19,19 @@ import java.util.*
 
 /**
  * Created by Allan Wang on 2017-07-22.
- */
-private const val FROST_PRO = "frost_pro"
+ **/
+private const val Phase_PRO = "Phase_pro"
 
 /**
  * Implemented pro checker with a hook for debug builds
  * Use this when checking if the pro feature is enabled
  */
-inline val IS_FROST_PRO: Boolean
-    get() = Prefs.pro || Prefs.profree || (BuildConfig.DEBUG && Prefs.debugPro)
+inline val IS_Phase_PRO: Boolean
+    get() = Prefs.pro 
+	//|| Prefs.profree
+	|| (BuildConfig.DEBUG && Prefs.debugPro)
 
-interface FrostBilling : BillingProcessor.IBillingHandler {
+interface PhaseBilling : BillingProcessor.IBillingHandler {
     fun Activity.onCreateBilling()
     fun onDestroyBilling()
     fun purchasePro()
@@ -37,7 +39,7 @@ interface FrostBilling : BillingProcessor.IBillingHandler {
     fun onActivityResultBilling(requestCode: Int, resultCode: Int, data: Intent?): Boolean
 }
 
-abstract class IabBinder : FrostBilling {
+abstract class IabBinder : PhaseBilling {
 
     var bp: BillingProcessor? = null
     lateinit var activityRef: WeakReference<Activity>
@@ -58,20 +60,20 @@ abstract class IabBinder : FrostBilling {
         bp = null
     }
 
-    override fun onBillingInitialized() = L.i("IAB initialized")
+    override fun onBillingInitialized() = L.i { "IAB initialized" }
 
-    override fun onPurchaseHistoryRestored() = L.d("IAB restored")
+    override fun onPurchaseHistoryRestored() = L.d { "IAB restored" }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         bp.doAsync {
-            L.i("IAB $productId purchased")
+            L.i { "IAB $productId purchased" }
             val listing = weakRef.get()?.getPurchaseListingDetails(productId) ?: return@doAsync
             val currency = try {
                 Currency.getInstance(listing.currency)
             } catch (e: Exception) {
                 null
             }
-            frostAnswers {
+            phaseAnswers {
                 logPurchase(PurchaseEvent().apply {
                     putItemId(productId)
                     putSuccess(true)
@@ -86,12 +88,12 @@ abstract class IabBinder : FrostBilling {
     }
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
-        frostAnswers {
+        phaseAnswers {
             logPurchase(PurchaseEvent()
                     .putCustomAttribute("result", errorCode.toString())
                     .putSuccess(false))
         }
-        error.logFrostAnswers("IAB error $errorCode")
+        error.logPhaseAnswers("IAB error $errorCode")
     }
 
     override fun onActivityResultBilling(requestCode: Int, resultCode: Int, data: Intent?): Boolean
@@ -100,7 +102,7 @@ abstract class IabBinder : FrostBilling {
     override fun purchasePro() {
         val bp = this.bp
         if (bp == null) {
-            frostAnswers {
+            phaseAnswers {
                 logPurchase(PurchaseEvent()
                         .putCustomAttribute("result", "null bp")
                         .putSuccess(false))
@@ -113,7 +115,7 @@ abstract class IabBinder : FrostBilling {
         if (!BillingProcessor.isIabServiceAvailable(a) || !bp.isInitialized || !bp.isOneTimePurchaseSupported)
             a.playStorePurchaseUnsupported()
         else
-            bp.purchase(a, FROST_PRO)
+            bp.purchase(a, Phase_PRO)
     }
 
 }
@@ -127,7 +129,7 @@ class IabSettings : IabBinder() {
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
         super.onBillingError(errorCode, error)
-        L.e("Billing error $errorCode ${error?.message}")
+        L.e { "Billing error $errorCode ${error?.message}" }
     }
 
     /**
@@ -136,9 +138,9 @@ class IabSettings : IabBinder() {
     override fun restorePurchases() {
         bp.doAsync {
             val load = weakRef.get()?.loadOwnedPurchasesFromGoogle() ?: return@doAsync
-            L.d("IAB settings load from google $load")
+            L.d { "IAB settings load from google $load" }
             uiThread {
-                if (!(weakRef.get()?.isPurchased(FROST_PRO) ?: return@uiThread)) {
+                if (!(weakRef.get()?.isPurchased(Phase_PRO) ?: return@uiThread)) {
                     if (Prefs.pro) activity.playStoreNoLongerPro()
                     else purchasePro()
                 } else {
@@ -174,9 +176,9 @@ class IabMain : IabBinder() {
         restored = true
         bp.doAsync {
             val load = weakRef.get()?.loadOwnedPurchasesFromGoogle() ?: false
-            L.d("IAB main load from google $load")
+            L.d { "IAB main load from google $load" }
             onComplete {
-                if (!(weakRef.get()?.isPurchased(FROST_PRO) ?: false)) {
+                if (weakRef.get()?.isPurchased(Phase_PRO) != true) {
                     if (Prefs.pro) activity.playStoreNoLongerPro()
                 } else {
                     if (!Prefs.pro) activity.playStoreFoundPro()

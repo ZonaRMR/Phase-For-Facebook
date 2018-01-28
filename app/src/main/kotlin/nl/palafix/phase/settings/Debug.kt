@@ -1,25 +1,29 @@
 package nl.palafix.phase.settings
 
 import android.content.Context
-import android.support.annotation.UiThread
 import ca.allanwang.kau.kpref.activity.KPrefAdapterBuilder
+import ca.allanwang.kau.utils.materialDialog
+import ca.allanwang.kau.utils.startActivityForResult
 import ca.allanwang.kau.utils.string
-import com.afollestad.materialdialogs.MaterialDialog
 import nl.palafix.phase.R
+import nl.palafix.phase.activities.DebugActivity
 import nl.palafix.phase.activities.SettingsActivity
+import nl.palafix.phase.activities.SettingsActivity.Companion.ACTIVITY_REQUEST_DEBUG
+import nl.palafix.phase.debugger.OfflineWebsite
+import nl.palafix.phase.facebook.FbCookie
 import nl.palafix.phase.facebook.FbItem
-import nl.palafix.phase.injectors.InjectorContract
-import nl.palafix.phase.injectors.JsAssets
-import nl.palafix.phase.utils.*
-import nl.palafix.phase.web.launchHeadlessHtmlExtractor
-import nl.palafix.phase.web.query
-import io.reactivex.disposables.Disposable
-import org.jetbrains.anko.AnkoAsyncContext
+import nl.palafix.phase.parsers.PhaseParser
+import nl.palafix.phase.parsers.MessageParser
+import nl.palafix.phase.parsers.NotifParser
+import nl.palafix.phase.parsers.SearchParser
+import nl.palafix.phase.utils.L
+import nl.palafix.phase.utils.phaseUriFromFile
+import nl.palafix.phase.utils.sendPhaseEmail
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import java.io.File
+import java.util.concurrent.Future
 
 /**
  * Created by Allan Wang on 2017-06-30.
@@ -33,108 +37,104 @@ fun SettingsActivity.getDebugPrefs(): KPrefAdapterBuilder.() -> Unit = {
         descRes = R.string.debug_disclaimer_info
     }
 
-    Debugger.values().forEach {
-        plainText(it.data.titleId) {
-            iicon = it.data.icon
-            onClick = { itemView, _, _ -> it.debug(itemView.context); true }
-        }
+    plainText(R.string.debug_web) {
+        descRes = R.string.debug_web_desc
+        onClick = { this@getDebugPrefs.startActivityForResult<DebugActivity>(ACTIVITY_REQUEST_DEBUG) }
     }
 
-}
+    plainText(R.string.debug_parsers) {
+        descRes = R.string.debug_parsers_desc
+        onClick = {
 
-private enum class Debugger(val data: FbItem, val injector: InjectorContract?, vararg query: String) {
-    MENU(FbItem.MENU, JsAssets.MENU_DEBUG, "#viewport"), //todo modify menu js for debugging
-    NOTIFICATIONS(FbItem.NOTIFICATIONS, null, "#notifications_list");
-//    SEARCH(FbItem.SEARCH, JsActions.FETCH_BODY);
+            val parsers = arrayOf(NotifParser, MessageParser, SearchParser)
 
-    val query = if (query.isNotEmpty()) arrayOf(*query, "#root", "main", "body") else emptyArray()
+            materialDialog {
+                items(parsers.map { string(it.nameRes) })
+                itemsCallback { dialog, _, position, _ ->
+                    dialog.dismiss()
+                    val parser = parsers[position]
+                    var attempt: Future<Unit>? = null
+                    val loading = materialDialog {
+                        content(parser.nameRes)
+                        progress(true, 100)
+                        negativeText(R.string.kau_cancel)
+                        onNegative { dialog, _ ->
+                            attempt?.cancel(true)
+                            dialog.dismiss()
+                        }
+                        canceledOnTouchOutside(false)
+                    }
 
-    fun debug(context: Context) {
-        val dialog = context.materialDialogThemed {
-            title("Debugging")
-            progress(true, 0)
-            canceledOnTouchOutside(false)
-            positiveText(R.string.kau_cancel)
-            onPositive { dialog, _ -> dialog.cancel() }
-        }
-        if (injector != null) dialog.extractHtml(injector)
-        else dialog.debugAsync {
-            loadJsoup()
-        }
-    }
-
-    fun MaterialDialog.debugAsync(task: AnkoAsyncContext<MaterialDialog>.() -> Unit) {
-        doAsync({ t: Throwable ->
-            val msg = t.message
-            L.e("Debugger failed: $msg")
-            context.runOnUiThread {
-                cancel()
-                context.materialDialogThemed {
-                    title(R.string.debug_incomplete)
-                    if (msg != null) content(msg)
-                }
-            }
-        }, task)
-    }
-
-    /**
-     * Wait for html to be returned from headless webview
-     *
-     * from [debug] to [simplifyJsoup] if [query] is not empty, or [createReport] otherwise
-     */
-    @UiThread
-    private fun MaterialDialog.extractHtml(injector: InjectorContract) {
-        setContent("Fetching webpage")
-        var disposable: Disposable? = null
-        setOnCancelListener { disposable?.dispose() }
-        context.launchHeadlessHtmlExtractor(data.url, injector) {
-            disposable = it.subscribe { (html, errorRes) ->
-                debugAsync {
-                    if (errorRes == -1) {
-                        L.i("Debug report successful", html)
-                        if (query.isNotEmpty()) simplifyJsoup(Jsoup.parseBodyFragment(html))
-                        else createReport(html)
-                    } else {
-                        throw Throwable(context.string(errorRes))
+                    attempt = loading.doAsync({
+                        createEmail(parser, "Error: ${it.message}")
+                    }) {
+                        val data = parser.parse(FbCookie.webCookie)
+                        uiThread {
+                            if (it.isCancelled) return@uiThread
+                            it.dismiss()
+                            createEmail(parser, data?.data)
+                        }
                     }
                 }
             }
+
         }
     }
+}
 
-    /**
-     * Get data directly from the link and search for our queries, returning the outerHTML
-     * of the first query found
-     *
-     * from [debug] to [simplifyJsoup]
-     */
-    private fun AnkoAsyncContext<MaterialDialog>.loadJsoup() {
-        uiThread {
-            it.setContent("Load Jsoup")
-            it.setOnCancelListener(null)
-            it.debugAsync { simplifyJsoup(frostJsoup(data.url)) }
+private fun Context.createEmail(parser: PhaseParser<*>, content: Any?) =
+        sendPhaseEmail("${string(R.string.debug_report)}: ${parser::class.java.simpleName}") {
+            addItem("Url", parser.url)
+            addItem("Contents", "$content")
         }
+
+private const val ZIP_NAME = "debug"
+
+fun SettingsActivity.sendDebug(urlOrig: String) {
+
+    val url = when {
+        urlOrig.endsWith("soft=requests") -> FbItem.FRIENDS.url
+        urlOrig.endsWith("soft=messages") -> FbItem.MESSAGES.url
+        urlOrig.endsWith("soft=notifications") -> FbItem.NOTIFICATIONS.url
+        urlOrig.endsWith("soft=search") -> "${FbItem._SEARCH.url}?q=a"
+        else -> urlOrig
     }
 
-    /**
-     * Takes snippet of given document that matches the first query in the [query] items
-     * before sending it to [createReport]
-     */
-    private fun AnkoAsyncContext<MaterialDialog>.simplifyJsoup(doc: Document) {
-        weakRef.get() ?: return
-        val q = query.first { doc.select(it).isNotEmpty() }
-        createReport(doc.select(q).outerHtml())
+    val downloader = OfflineWebsite(url, FbCookie.webCookie ?: "",
+            DebugActivity.baseDir(this))
+
+    val md = materialDialog {
+        title(R.string.parsing_data)
+        progress(false, 100)
+        negativeText(R.string.kau_cancel)
+        onNegative { dialog, _ -> dialog.dismiss() }
+        canceledOnTouchOutside(false)
+        dismissListener { downloader.cancel() }
     }
 
-    private fun AnkoAsyncContext<MaterialDialog>.createReport(html: String) {
-        val cleanHtml = html.cleanHtml()
-        uiThread {
-            val c = it.context
-            it.dismiss()
-            c.sendFrostEmail("${c.string(R.string.debug_report_email_title)} $name") {
-                addItem("Query List", query.contentToString())
-                footer = cleanHtml
+    md.doAsync {
+        downloader.loadAndZip(ZIP_NAME, { progress ->
+            uiThread { it.setProgress(progress) }
+        }) { success ->
+            uiThread {
+                it.dismiss()
+                if (success) {
+                    val zipUri = it.context.phaseUriFromFile(
+                            File(downloader.baseDir, "$ZIP_NAME.zip"))
+                    L.i { "Sending debug zip with uri $zipUri" }
+                    sendPhaseEmail(R.string.debug_report_email_title) {
+                        addItem("Url", url)
+                        addAttachment(zipUri)
+                        extras = {
+                            type = "application/zip"
+                        }
+                    }
+                } else {
+                    toast(R.string.error_generic)
+                }
             }
         }
+
     }
+
 }
