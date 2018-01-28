@@ -232,7 +232,6 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
         // Use WideViewport and Zoom out if there is no viewport defined
         settings.useWideViewPort = true
         settings.loadWithOverviewMode = true
-        // Enable remote debugging via chrome://inspect
     }
 
     /**
@@ -257,6 +256,7 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
             return true
         }
         else (finishSlideOut())
+        web.clearCache(true)
         return true
     }
 
@@ -286,6 +286,7 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
 
     override fun onDestroy() {
         web.destroy()
+        web.clearCache(true)
         super.onDestroy()
         kauSwipeOnDestroy()
     }

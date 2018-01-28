@@ -84,8 +84,6 @@ import java.util.*
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
-typealias drawerItem = Any
-
 /**
  * Created by Allan Wang on 20/12/17.
  *
@@ -375,7 +373,6 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
 
     private fun refreshAll() {
         fragmentSubject.onNext(REQUEST_REFRESH)
-        drawer.updateBadge(-999L,  StringHolder("${realm.where(BookmarkModel::class.java).findAll().size.toString()}"))
 }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -482,7 +479,6 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
 
     override fun onPause() {
         controlWebview?.pauseTimers()
-        drawer.updateBadge(-999L,  StringHolder("${realm.where(BookmarkModel::class.java).findAll().size.toString()}"))
         L.v { "Pause main web timers" }
         super.onPause()
     }
@@ -492,14 +488,13 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
         if (!IS_Phase_PRO) {
             if (Prefs.theme == Theme.CUSTOM.ordinal) Prefs.theme = Theme.DEFAULT.ordinal
         }
-        drawer.updateBadge(-999L,  StringHolder("${realm.where(BookmarkModel::class.java).findAll().size.toString()}"))
         super.onStart()
     }
 
     override fun onDestroy() {
         onDestroyBilling()
         controlWebview?.destroy()
-        drawer.updateBadge(-999L,  StringHolder("${realm.where(BookmarkModel::class.java).findAll().size.toString()}"))
+        controlWebview?.clearCache(true)
         super.onDestroy()
     }
 
@@ -529,6 +524,7 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
                     }
                 return true
         } else {
+                controlWebview?.clearCache(true)
                 finishAndRemoveTask()
         }
      return false
