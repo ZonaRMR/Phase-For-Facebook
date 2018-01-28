@@ -1,6 +1,7 @@
 package nl.palafix.phase.activities
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -205,7 +206,7 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
             if (Showcase.firstWebOverlay) {
                 coordinator.phaseSnackbar(R.string.web_overlay_swipe_hint) {
                     duration = Snackbar.LENGTH_INDEFINITE
-                    setAction(R.string.kau_got_it) { _ -> this.dismiss() }
+                    setAction(R.string.got_it) { _ -> this.dismiss() }
                 }
             }
         }
@@ -220,13 +221,10 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
         val settings = web.settings
         settings.javaScriptEnabled = true
         settings.javaScriptCanOpenWindowsAutomatically = true
-        settings.setGeolocationEnabled(true)
         settings.allowFileAccess = true
-        settings.setAppCacheEnabled(true)
         // Allow use of Local Storage
         settings.domStorageEnabled = true
-        settings.blockNetworkImage = false
-        settings.databaseEnabled = true
+        settings.allowFileAccess = true
         // Enable pinch to zoom without the zoom buttons
         settings.builtInZoomControls = true
         settings.setSupportZoom(true)
@@ -235,7 +233,6 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
         settings.useWideViewPort = true
         settings.loadWithOverviewMode = true
         // Enable remote debugging via chrome://inspect
-        settings.allowFileAccess = true
     }
 
     /**
@@ -363,7 +360,6 @@ open class WebOverlayActivityBase(private val forceBasicAgent: Boolean) : BaseAc
      */
     override var videoViewer: PhaseVideoViewer? = null
     override val lowerVideoPadding: PointF = PointF(0f, 0f)
-
 }
 
 
