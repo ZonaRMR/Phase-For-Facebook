@@ -1,14 +1,11 @@
 package nl.palafix.phase.facebook
 
-import android.app.Activity
+
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.DisplayMetrics
-import android.util.Log
 import nl.palafix.phase.utils.L
 import java.io.IOException
 import java.net.HttpURLConnection
