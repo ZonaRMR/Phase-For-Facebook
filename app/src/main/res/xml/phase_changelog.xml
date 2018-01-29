@@ -5,6 +5,9 @@
     <item text="" />
     -->
 
+    <version title="v1.8.0" />
+    <item text="Fixed website\'s insane long url when open in Weboverlay. Now all link/website\'s should work/load properly" />
+
     <version title="v1.7.9" />
     <item text="Add option to disable pip (settings > behaviour)" />
 

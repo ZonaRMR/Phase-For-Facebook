@@ -1,8 +1,22 @@
 package nl.palafix.phase.facebook
 
+import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.DisplayMetrics
+import android.util.Log
 import nl.palafix.phase.utils.L
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.*
+import java.util.regex.Pattern
 
 /**
 * Created by Allan Wang on 2017-07-07.
@@ -13,30 +27,22 @@ inline val String.formattedFbUrl: String
     get() = FbUrlFormatter(this).toString()
 
 class FbUrlFormatter(url: String) {
-    private val queries = mutableMapOf<String, String>()
     private val cleaned: String
-
-    /**
-     * Formats all facebook urls
-     *
-     * The order is very important:
-     * 1. Wrapper links (discardables) are stripped away, resulting in the actual link
-     * 2. CSS encoding is converted to normal encoding
-     * 3. Url is completely decoded
-     * 4. Url is split into sections
-     */
+    private val queries = mutableMapOf<String, String>()
     init {
-        cleaned = clean(url)
+        cleaned = cleanAndDecodeUrl(url)
     }
 
-    private fun clean(url: String): String {
+
+    // "clean" and decode an url, all in one
+    private fun cleanAndDecodeUrl(url:String):String {
         if (url.isBlank()) return ""
         var cleanedUrl = url
         if (cleanedUrl.startsWith("#!")) cleanedUrl = cleanedUrl.substring(2)
         val urlRef = cleanedUrl
-        discardable.forEach { cleanedUrl = cleanedUrl.replace(it, "", true) }
+        discardable.forEach { cleanedUrl = cleanedUrl.replace(("&h=.*").toRegex(), "").replace(("\\?acontext=.*").toRegex(), "") .replace(it, "", true) }
         val changed = cleanedUrl != urlRef
-        converter.forEach { (k, v) -> cleanedUrl = cleanedUrl.replace(k, v, true) }
+        converter.forEach { it -> cleanedUrl = cleanedUrl.replace(it, "", true) }
         try {
             cleanedUrl = URLDecoder.decode(cleanedUrl, StandardCharsets.UTF_8.name())
         } catch (e: Exception) {
@@ -62,6 +68,7 @@ class FbUrlFormatter(url: String) {
         return cleanedUrl
     }
 
+
     override fun toString(): String {
         val builder = StringBuilder()
         builder.append(cleaned)
@@ -79,18 +86,20 @@ class FbUrlFormatter(url: String) {
         return list
     }
 
+
     companion object {
 
         const val VIDEO_REDIRECT = "/video_redirect/?src="
-        /**
-         * Items here are explicitly removed from the url
-         * Taken from FaceSlim
-         * https://github.com/indywidualny/FaceSlim/blob/master/app/src/main/java/org/indywidualni/fblite/util/Miscellany.java
-         *
-         * Note: Typically, in this case, the redirect url should have all the necessary queries
-         * I am unsure how Facebook reacts in all cases, so the ones after the redirect are appended on afterwards
-         * That shouldn't break anything
-         */
+
+        private const val REPLACE = " \"\\3C \" to \"%3C\", \"\\3E \" to \"%3E\", \"\\23 \" to \"%23\", \"\\25 \" to \"%25\",\n" +
+                "\"\\7B \" to \"%7B\", \"\\7D \" to \"%7D\", \"\\7C \" to \"%7C\", \"\\5C \" to \"%5C\",\n" +
+                "\"\\5E \" to \"%5E\", \"\\7E \" to \"%7E\", \"\\5B \" to \"%5B\", \"\\5D \" to \"%5D\",\n" +
+                "\"\\60 \" to \"%60\", \"\\3B \" to \"%3B\", \"\\2F \" to \"%2F\", \"\\3F \" to \"%3F\",\n" +
+                "\"\\3A \" to \"%3A\", \"\\40 \" to \"%40\", \"\\3D \" to \"%3D\", \"\\26 \" to \"%26\",\n" +
+                "\"\\24 \" to \"%24\", \"\\2B \" to \"%2B\", \"\\22 \" to \"%22\", \"\\2C \" to \"%2C\",\n" +
+                "\"\\20 \" to \"%20\""
+
+        // "clean" an url and remove Facebook tracking redirection
         val discardable = arrayOf(
                 "http://lm.facebook.com/l.php?u=",
                 "https://lm.facebook.com/l.php?u=",
@@ -100,19 +109,69 @@ class FbUrlFormatter(url: String) {
                 "https://touch.facebook.com/l.php?u=",
                 VIDEO_REDIRECT
         )
-
+        // url decoder, recreate all the special characters
         val misc = arrayOf("&amp;" to "&")
 
         val discardableQueries = arrayOf("ref", "refid")
 
         val converter = listOf(
-                "\\3C " to "%3C", "\\3E " to "%3E", "\\23 " to "%23", "\\25 " to "%25",
-                "\\7B " to "%7B", "\\7D " to "%7D", "\\7C " to "%7C", "\\5C " to "%5C",
-                "\\5E " to "%5E", "\\7E " to "%7E", "\\5B " to "%5B", "\\5D " to "%5D",
-                "\\60 " to "%60", "\\3B " to "%3B", "\\2F " to "%2F", "\\3F " to "%3F",
-                "\\3A " to "%3A", "\\40 " to "%40", "\\3D " to "%3D", "\\26 " to "%26",
-                "\\24 " to "%24", "\\2B " to "%2B", "\\22 " to "%22", "\\2C " to "%2C",
-                "\\20 " to "%20"
+                REPLACE
+                .replace("%3C", "<").replace("%3E", ">").replace("%23", "#").replace("%25", "%")
+                    .replace("%7B", "{").replace("%7D", "}").replace("%7C", "|").replace("%5C", "\\")
+                    .replace("%5E", "^").replace("%7E", "~").replace("%5B", "[").replace("%5D", "]")
+                    .replace("%60", "`").replace("%3B", ";").replace("%2F", "/").replace("%3F", "?")
+                    .replace("%3A", ":").replace("%40", "@").replace("%3D", "=").replace("%26", "&")
+                    .replace("%24", "$").replace("%2B", "+").replace("%22", "\"").replace("%2C", ",")
+                    .replace("%20", " ")
+
         )
+
+        fun copyTextToClipboard(context:Context, label:String, text:String) {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText(label, text)
+            clipboard.setPrimaryClip(clip)
+        }
+        /**
+         * Extracts URL from a given string
+         *
+         * @param string Text which may contain an URL
+         * @return Extracted URL or empty string if URL not found inside
+         */
+        fun extractUrl(string:String):String {
+            val urlPattern = Pattern.compile(
+                    ("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
+                            + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
+                            + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)"),
+                    Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
+            val matcher = urlPattern.matcher(string)
+            var matchStart = 0
+            var matchEnd = 0
+            while (matcher.find())
+            {
+                matchStart = matcher.start(1)
+                matchEnd = matcher.end()
+            }
+            return string.substring(matchStart, matchEnd)
+        }
+        /**
+         * Download an image as Bitmap object (run always outside the Main Thread)
+         */
+        fun getBitmapFromURL(src:String): Bitmap? {
+            try
+            {
+                val url = URL(src)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.setDoInput(true)
+                connection.connect()
+                val input = connection.getInputStream()
+                return BitmapFactory.decodeStream(input)
+            }
+            catch (e:IOException) {
+                return null
+            }
+            catch (e:Exception) {
+                return null
+            }
+        }
     }
 }
