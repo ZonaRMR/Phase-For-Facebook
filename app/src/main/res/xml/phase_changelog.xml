@@ -4,6 +4,8 @@
     <version title="v" />
     <item text="" />
     -->
+    <version title="v1.8.1" />
+    <item text="Fixed notification profile image\'s" />
 
     <version title="v1.8.0" />
     <item text="Fixed website\'s insane long url when open in Weboverlay. Now all link/website\'s should work/load properly" />

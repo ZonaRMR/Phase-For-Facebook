@@ -39,7 +39,7 @@ class FbUrlFormatter(url: String) {
         val urlRef = cleanedUrl
         discardable.forEach { cleanedUrl = cleanedUrl.replace(("&h=.*").toRegex(), "").replace(("\\?acontext=.*").toRegex(), "") .replace(it, "", true) }
         val changed = cleanedUrl != urlRef
-        converter.forEach { it -> cleanedUrl = cleanedUrl.replace(it, "", true) }
+        converter.forEach { (k, v) -> cleanedUrl = cleanedUrl.replace(k, v, true) }
         try {
             cleanedUrl = URLDecoder.decode(cleanedUrl, StandardCharsets.UTF_8.name())
         } catch (e: Exception) {
@@ -88,13 +88,6 @@ class FbUrlFormatter(url: String) {
 
         const val VIDEO_REDIRECT = "/video_redirect/?src="
 
-        private const val REPLACE = " \"\\3C \" to \"%3C\", \"\\3E \" to \"%3E\", \"\\23 \" to \"%23\", \"\\25 \" to \"%25\",\n" +
-                "\"\\7B \" to \"%7B\", \"\\7D \" to \"%7D\", \"\\7C \" to \"%7C\", \"\\5C \" to \"%5C\",\n" +
-                "\"\\5E \" to \"%5E\", \"\\7E \" to \"%7E\", \"\\5B \" to \"%5B\", \"\\5D \" to \"%5D\",\n" +
-                "\"\\60 \" to \"%60\", \"\\3B \" to \"%3B\", \"\\2F \" to \"%2F\", \"\\3F \" to \"%3F\",\n" +
-                "\"\\3A \" to \"%3A\", \"\\40 \" to \"%40\", \"\\3D \" to \"%3D\", \"\\26 \" to \"%26\",\n" +
-                "\"\\24 \" to \"%24\", \"\\2B \" to \"%2B\", \"\\22 \" to \"%22\", \"\\2C \" to \"%2C\",\n" +
-                "\"\\20 \" to \"%20\""
 
         // "clean" an url and remove Facebook tracking redirection
         val discardable = arrayOf(
@@ -111,15 +104,15 @@ class FbUrlFormatter(url: String) {
 
         val discardableQueries = arrayOf("ref", "refid")
 
-        val converter = listOf(
-                REPLACE
-                .replace("%3C", "<").replace("%3E", ">").replace("%23", "#").replace("%25", "%")
-                    .replace("%7B", "{").replace("%7D", "}").replace("%7C", "|").replace("%5C", "\\")
-                    .replace("%5E", "^").replace("%7E", "~").replace("%5B", "[").replace("%5D", "]")
-                    .replace("%60", "`").replace("%3B", ";").replace("%2F", "/").replace("%3F", "?")
-                    .replace("%3A", ":").replace("%40", "@").replace("%3D", "=").replace("%26", "&")
-                    .replace("%24", "$").replace("%2B", "+").replace("%22", "\"").replace("%2C", ",")
-                    .replace("%20", " ")
+                val converter = listOf(
+                "\\3C " to "%3C", "\\3E " to "%3E", "\\23 " to "%23", "\\25 " to "%25",
+        "\\7B " to "%7B", "\\7D " to "%7D", "\\7C " to "%7C", "\\5C " to "%5C",
+        "\\5E " to "%5E", "\\7E " to "%7E", "\\5B " to "%5B", "\\5D " to "%5D",
+        "\\60 " to "%60", "\\3B " to "%3B", "\\2F " to "%2F", "\\3F " to "%3F",
+        "\\3A " to "%3A", "\\40 " to "%40", "\\3D " to "%3D", "\\26 " to "%26",
+        "\\24 " to "%24", "\\2B " to "%2B", "\\22 " to "%22", "\\2C " to "%2C",
+        "\\20 " to "%20"
+
 
         )
 
