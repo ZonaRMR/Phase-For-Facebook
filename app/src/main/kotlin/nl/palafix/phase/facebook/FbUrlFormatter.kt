@@ -115,53 +115,5 @@ class FbUrlFormatter(url: String) {
 
 
         )
-
-        fun copyTextToClipboard(context:Context, label:String, text:String) {
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText(label, text)
-            clipboard.setPrimaryClip(clip)
-        }
-        /**
-         * Extracts URL from a given string
-         *
-         * @param string Text which may contain an URL
-         * @return Extracted URL or empty string if URL not found inside
-         */
-        fun extractUrl(string:String):String {
-            val urlPattern = Pattern.compile(
-                    ("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
-                            + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
-                            + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)"),
-                    Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
-            val matcher = urlPattern.matcher(string)
-            var matchStart = 0
-            var matchEnd = 0
-            while (matcher.find())
-            {
-                matchStart = matcher.start(1)
-                matchEnd = matcher.end()
-            }
-            return string.substring(matchStart, matchEnd)
-        }
-        /**
-         * Download an image as Bitmap object (run always outside the Main Thread)
-         */
-        fun getBitmapFromURL(src:String): Bitmap? {
-            try
-            {
-                val url = URL(src)
-                val connection = url.openConnection() as HttpURLConnection
-                connection.setDoInput(true)
-                connection.connect()
-                val input = connection.getInputStream()
-                return BitmapFactory.decodeStream(input)
-            }
-            catch (e:IOException) {
-                return null
-            }
-            catch (e:Exception) {
-                return null
-            }
-        }
     }
 }
