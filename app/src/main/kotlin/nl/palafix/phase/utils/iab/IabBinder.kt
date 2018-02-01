@@ -27,9 +27,10 @@ private const val Phase_PRO = "Phase_pro"
  * Use this when checking if the pro feature is enabled
  */
 inline val IS_Phase_PRO: Boolean
-    get() = Prefs.pro 
-	//|| Prefs.profree
-	|| (BuildConfig.DEBUG && Prefs.debugPro)
+    get() = Prefs.pro
+            || Prefs.profree
+            ||
+            (BuildConfig.DEBUG && Prefs.debugPro)
 
 interface PhaseBilling : BillingProcessor.IBillingHandler {
     fun Activity.onCreateBilling()

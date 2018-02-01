@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.8.2
+* Added FloatingActionbutton, easy status update. (Allan Wang: Frost For Facebook)
+
+## v1.8.1
+* Fixed notification profile image\'s
+
+## v1.8.0
+* Fixed website\'s insane long url when open in Weboverlay. Now all link/website\'s should work/load properly
+
 ## v1.7.9
 * Add option to disable pip (settings > behaviour)
 

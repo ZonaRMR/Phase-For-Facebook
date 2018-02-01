@@ -26,19 +26,19 @@ notifications:
   email: false
   slack:
     rooms:
-    - phaseapps:#phase-for-facebook
+    - phase:5c35ffaabfbfa0872dd64664e500d2873a72b6b3#phase-for-facebook
     on_success: always
     on_failure: always
     template:
     - Phase Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of
       %{repository}@%{branch} %{result} in %{duration}
     - "%{commit_subject}"
-    - "<https://github.com/Palafix/Phase-for-Facebook-APK-Builder/releases/tag/v%{build_number}|APK
+    - "<https://github.com/Palafix/Phase-for-Facebook/releases/tag/v%{build_number}|APK
       Download>"
 sudo: false
 branches:
   except:
-  - l10n_dev
+  - test
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

@@ -1,9 +1,8 @@
 package nl.palafix.phase.fragments
 
-import nl.palafix.phase.contracts.PhaseContentContainer
-import nl.palafix.phase.contracts.PhaseContentCore
-import nl.palafix.phase.contracts.PhaseContentParent
-import nl.palafix.phase.contracts.MainActivityContract
+
+import nl.palafix.phase.contracts.*
+import android.support.design.widget.FloatingActionButton
 import nl.palafix.phase.views.PhaseRecyclerView
 import io.reactivex.disposables.Disposable
 
@@ -47,6 +46,8 @@ interface FragmentContract : PhaseContentContainer {
      * the fragment should call [reload] and make [firstLoad] false
      */
     fun firstLoadRequest()
+
+    fun updateFab(contract: MainFabContract)
 
     /**
      * Single callable action to be executed upon creation

@@ -276,14 +276,6 @@ inline val String?.isIndependent: Boolean
         return true
     }
 
-
-
-
-/*
-         * Facebook messages have the following cases for the tid query
-         * mid* or id* for newer threads, which can be launched in new windows
-         * or a hash for old threads, which must be loaded on old threads
-         */
 val dependentSet = setOf(
         "photoset_token",
         "direct_action_execute",

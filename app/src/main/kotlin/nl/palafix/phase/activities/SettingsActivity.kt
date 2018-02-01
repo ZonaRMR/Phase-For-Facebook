@@ -97,7 +97,7 @@ class SettingsActivity : KPrefActivity(), PhaseBilling by IabSettings() {
    override fun onCreateKPrefs(savedInstanceState: Bundle?): KPrefAdapterBuilder.() -> Unit = {
 
 
-        //checkbox(R.string.custom_pro, { Prefs.profree }, { Prefs.profree = it })
+        checkbox(R.string.custom_pro, { Prefs.profree }, { Prefs.profree = it })
 
 
         if (BuildConfig.DEBUG) {

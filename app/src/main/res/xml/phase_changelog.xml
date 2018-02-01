@@ -4,6 +4,9 @@
     <version title="v" />
     <item text="" />
     -->
+    <version title="v1.8.2" />
+    <item text="Added FloatingActionbutton, easy status update. (Allan Wang: Frost For Facebook)" />
+
     <version title="v1.8.1" />
     <item text="Fixed notification profile image\'s" />
 

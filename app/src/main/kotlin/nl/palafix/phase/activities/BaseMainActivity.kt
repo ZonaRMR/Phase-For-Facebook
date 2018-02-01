@@ -7,6 +7,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.os.Handler
 import android.support.annotation.StringRes
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
@@ -45,6 +47,7 @@ import co.zsmb.materialdrawerkt.draweritems.sectionHeader
 import com.crashlytics.android.answers.ContentViewEvent
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.holder.StringHolder
@@ -98,6 +101,7 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
     override val frameWrapper: FrameLayout by bindView(R.id.frame_wrapper)
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val viewPager: PhaseViewPager by bindView(R.id.container)
+    private val fab: FloatingActionButton by bindView(R.id.fab)
     val tabs: TabLayout by bindView(R.id.tabs)
     private val appBar: AppBarLayout by bindView(R.id.appbar)
     val coordinator: CoordinatorLayout by bindView(R.id.main_content)
@@ -125,7 +129,7 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
             header(appBar)
             background(viewPager)
         }
-        L.i { "Main AAA ${System.currentTimeMillis() - start} ms" }
+
 
         setSupportActionBar(toolbar)
 
@@ -135,8 +139,7 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
         adapter = SectionsPagerAdapter(loadFbTabs())
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = TAB_COUNT
-        L.i { "Main BBB ${System.currentTimeMillis() - start} ms" }
-        L.i { "Main CCC ${System.currentTimeMillis() - start} ms" }
+
         tabs.setBackgroundColor(Prefs.mainActivityLayout.backgroundColor())
         onNestedCreate(savedInstanceState)
         L.i { "Main finished loading UI in ${System.currentTimeMillis() - start} ms" }
@@ -157,12 +160,54 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
         }
         setupDrawer(savedInstanceState)
         L.i { "Main started in ${System.currentTimeMillis() - start} ms" }
+        initFab()
     }
 
     /**
      * Injector to handle creation for sub classes
      */
     protected abstract fun onNestedCreate(savedInstanceState: Bundle?)
+
+    private var hasFab = false
+    private var shouldShow = false
+
+    private fun initFab() {
+        hasFab = false
+        shouldShow = false
+        fab.backgroundTintList = ColorStateList.valueOf(Prefs.headerColor.withMinAlpha(200))
+        fab.hide()
+        appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (!hasFab) return@addOnOffsetChangedListener
+            val percent = Math.abs(verticalOffset.toFloat() / appBarLayout.totalScrollRange)
+            val shouldShow = percent < 0.2
+            if (this.shouldShow != shouldShow) {
+                this.shouldShow = shouldShow
+                fab.showIf(shouldShow)
+            }
+        }
+    }
+
+
+    override fun showFab(iicon: IIcon, clickEvent: () -> Unit) {
+        hasFab = true
+        fab.setOnClickListener { clickEvent() }
+        if (shouldShow) {
+            if (fab.isShown) {
+                fab.fadeScaleTransition {
+                    setIcon(iicon, Prefs.iconColor)
+                }
+                return
+            }
+        }
+        fab.setIcon(iicon, Prefs.iconColor)
+        fab.showIf(shouldShow)
+    }
+
+    override fun hideFab() {
+        hasFab = false
+        fab.setOnClickListener(null)
+        fab.hide()
+    }
 
     fun tabsForEachView(action: (position: Int, view: BadgedIcon) -> Unit) {
         (0 until tabs.tabCount).asSequence().forEach { i ->
@@ -222,7 +267,8 @@ abstract class BaseMainActivity : BaseActivity(), MainActivityContract,
                             } else {
                                 materialDialogThemed {
                                     title(R.string.kau_logout)
-                                    content(String.format(string(R.string.kau_logout_confirm_as_x), currentCookie.name ?: Prefs.userId.toString()))
+                                    content(String.format(string(R.string.kau_logout_confirm_as_x), currentCookie.name
+                                            ?: Prefs.userId.toString()))
                                     positiveText(R.string.kau_yes)
                                     negativeText(R.string.kau_no)
                                     onPositive { _, _ -> FbCookie.logout(this@BaseMainActivity) }

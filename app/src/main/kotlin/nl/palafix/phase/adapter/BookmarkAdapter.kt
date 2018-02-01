@@ -28,7 +28,6 @@ import nl.palafix.phase.activities.MainActivity
 import android.content.Intent
 import android.graphics.LightingColorFilter
 import com.mikepenz.materialdrawer.holder.StringHolder
-import nl.palafix.phase.activities.drawerItem
 import nl.palafix.phase.facebook.FbCookie
 import nl.palafix.phase.utils.materialDialogThemed
 

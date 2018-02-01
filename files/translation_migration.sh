@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MODULE=Frost-for-Facebook
+MODULE=Phase-for-Facebook
 
 cd ..
 

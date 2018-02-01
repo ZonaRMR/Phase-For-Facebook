@@ -2,14 +2,20 @@ package nl.palafix.phase.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.allanwang.kau.utils.fadeScaleTransition
+import ca.allanwang.kau.utils.setIcon
+import ca.allanwang.kau.utils.withArguments
+import com.mikepenz.iconics.typeface.IIcon
 import ca.allanwang.kau.utils.withArguments
 import nl.palafix.phase.contracts.DynamicUiContract
 import nl.palafix.phase.contracts.PhaseContentParent
 import nl.palafix.phase.contracts.MainActivityContract
+import nl.palafix.phase.contracts.MainFabContract
 import nl.palafix.phase.enums.FeedSort
 import nl.palafix.phase.facebook.FbItem
 import nl.palafix.phase.utils.*
@@ -70,7 +76,7 @@ abstract class BaseFragment : Fragment(), FragmentContract, DynamicUiContract {
             throw IllegalArgumentException("${this::class.java.simpleName} is not attached to a context implementing MainActivityContract")
     }
 
-    override final fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(layoutRes, container, false)
         val content = view  as? PhaseContentParent
                 ?: throw IllegalArgumentException("layoutRes for fragment must return view implementing PhaseContentParent")
@@ -118,6 +124,7 @@ abstract class BaseFragment : Fragment(), FragmentContract, DynamicUiContract {
                     }
                     position -> {
                         contract.setTitle(baseEnum.titleId)
+                        updateFab(contract)
                         core?.active = true
                     }
                     -(position + 1) -> {
@@ -128,6 +135,22 @@ abstract class BaseFragment : Fragment(), FragmentContract, DynamicUiContract {
                     }
                 }
             }
+
+    override fun updateFab(contract: MainFabContract) {
+        contract.hideFab() // default
+    }
+
+    protected fun FloatingActionButton.update(iicon: IIcon, click: () -> Unit) {
+        if (isShown) {
+            fadeScaleTransition {
+                setIcon(iicon, Prefs.iconColor)
+            }
+        } else {
+            setIcon(iicon, Prefs.iconColor)
+            show()
+        }
+        setOnClickListener { click() }
+    }
 
     override fun detachMainObservable() {
         activityDisposable?.dispose()
