@@ -88,13 +88,6 @@ android {
             }
         }
 
-        release {
-            storeFile file('../files/phasekey.jks')
-            storePassword '!Wintermans1'
-            keyAlias 'palafix'
-            keyPassword '!Wintermans1'
-        }
-
         test {
             storeFile file("../files/test.keystore")
             storePassword "testkey"
