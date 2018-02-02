@@ -26,7 +26,7 @@ notifications:
   email: false
   slack:
     rooms:
-    - phase:5c35ffaabfbfa0872dd64664e500d2873a72b6b3#phase-for-facebook
+    - phase:#phase-for-facebook
     on_success: always
     on_failure: always
     template:
