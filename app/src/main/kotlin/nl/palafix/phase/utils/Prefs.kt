@@ -148,7 +148,7 @@ object Prefs : KPref() {
      */
     var pro: Boolean by kpref("previously_pro", false)
 	
-	var profree: Boolean by kpref("free_pro", true)
+	//var profree: Boolean by kpref("free_pro", true)
 
     var debugPro: Boolean by kpref("debug_pro", false)
 

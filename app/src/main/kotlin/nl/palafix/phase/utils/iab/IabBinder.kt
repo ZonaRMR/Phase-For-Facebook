@@ -28,7 +28,7 @@ private const val Phase_PRO = "Phase_pro"
  */
 inline val IS_Phase_PRO: Boolean
     get() = Prefs.pro
-            || Prefs.profree
+            //|| Prefs.profree
             ||
             (BuildConfig.DEBUG && Prefs.debugPro)
 
