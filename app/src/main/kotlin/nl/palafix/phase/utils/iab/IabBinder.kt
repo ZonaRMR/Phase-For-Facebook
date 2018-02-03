@@ -20,7 +20,7 @@ import java.util.*
 /**
  * Created by Allan Wang on 2017-07-22.
  **/
-private const val Phase_PRO = "Phase_pro"
+private const val Phase_PRO = "palafix_phase_pro"
 
 /**
  * Implemented pro checker with a hook for debug builds

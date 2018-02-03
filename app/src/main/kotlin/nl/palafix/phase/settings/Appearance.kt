@@ -144,12 +144,6 @@ fun SettingsActivity.getAppearancePrefs(): KPrefAdapterBuilder.() -> Unit = {
         }
     }
 
-    plainText(R.string.main_tabs) {
-        descRes = R.string.main_tabs_desc
-        onClick = { launchTabCustomizerActivity() }
-    }
-
-
     list.add(KPrefTextSeekbar(
             KPrefSeekbar.KPrefSeekbarBuilder(
                     globalOptions,
@@ -169,5 +163,12 @@ fun SettingsActivity.getAppearancePrefs(): KPrefAdapterBuilder.() -> Unit = {
         setPhaseResult(REQUEST_NAV)
     }) {
         descRes = R.string.tint_nav_desc
+    }
+
+    header(R.string.pro_features)
+    plainText(R.string.main_tabs) {
+        descRes = R.string.main_tabs_desc
+        dependsOnPro()
+        onClick = { launchTabCustomizerActivity() }
     }
 }
