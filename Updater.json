@@ -1,7 +1,7 @@
 {
 	"is_run_mode": "true",
 	"name": "Phase For Facebook",
-	"uri_current": "nl.palafix.Phase",
+	"uri_current": "nl.palafix.phase",
 	"version_code_current": "24",
 	"version_code_min": "15",
 	"update_info": "TEST",
